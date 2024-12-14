@@ -26,10 +26,19 @@ function App() {
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <BrowserRouter>
         <Container>
-          <Sidebar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setDarkMode= {setDarkMode} darkMode={darkMode} />
+          {menuOpen && (
+            <Sidebar
+              menuOpen={menuOpen}
+              setMenuOpen={setMenuOpen}
+              setDarkMode={setDarkMode}
+              darkMode={darkMode}
+            />
+          )}
+
           <Frame>
-            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
-            Talkify</Frame>
+            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+            Talkify
+          </Frame>
         </Container>
       </BrowserRouter>
     </ThemeProvider>
