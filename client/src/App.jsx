@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { darkTheme, lightTheme } from "../utils/Themes";
+import { darkTheme, lightTheme } from "./utils/Themes";
 import Sidebar from "./components/Sidebar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
