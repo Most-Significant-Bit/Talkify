@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PodcastCard from "../components/PodcastCard";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
 const DashboardMain = styled.div`
   padding: 20px 30px;
   padding-bottom: 200px;
-  height: 100%;
-  overflow-y: scroll;
+  padding-top: 120px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -31,7 +33,7 @@ background-color: ${theme.bg};
   padding: 20px 30px;
 `;
 const Topic = styled.div`
-  color: ${({ theme }) => theme.text_primary};
+  color: white;
   font-size: 24px;
   font-weight: 540;
   display: flex;
@@ -66,40 +68,47 @@ const Podcasts = styled.div`
 `;
 
 const Dashboard = () => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <DashboardMain>
-      <Container>
-        <Topic>
-          Most Popular
-          <Link
-            to={`/showpodcasts/mostpopular`}
-            style={{ textDecoration: "none" }}
-          >
-            <Span>Show All</Span>
-          </Link>
-        </Topic>
-        <Podcasts>
-          <PodcastCard />
-          <PodcastCard />
-          <PodcastCard />
-          <PodcastCard />
-        </Podcasts>
-      </Container>
+    <>
+      <Navbar isOpen={isOpen} toggleSidebar={() => setIsOpen(!isOpen)} />
+      <DashboardMain>
+        <Container>
+          <Topic>
+            Most Popular
+            <Link
+              to={`/showpodcasts/mostpopular`}
+              style={{ textDecoration: "none" }}
+            >
+              <Span>Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            <PodcastCard />
+            <PodcastCard />
+            <PodcastCard />
+            <PodcastCard />
+          </Podcasts>
+        </Container>
 
-      <Container>
-        <Topic>
-          Comedy
-          <Link to={`/showpodcasts/comedy`} style={{ textDecoration: "none" }}>
-            <Span>Show All</Span>
-          </Link>
-        </Topic>
-        <Podcasts>
-          <PodcastCard />
-          <PodcastCard />
-          <PodcastCard />
-        </Podcasts>
-      </Container>
-    </DashboardMain>
+        <Container>
+          <Topic>
+            Comedy
+            <Link
+              to={`/showpodcasts/comedy`}
+              style={{ textDecoration: "none" }}
+            >
+              <Span>Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            <PodcastCard />
+            <PodcastCard />
+            <PodcastCard />
+          </Podcasts>
+        </Container>
+      </DashboardMain>
+    </>
   );
 };
 

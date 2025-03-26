@@ -13,7 +13,7 @@ const PlayIcon = styled.div`
   z-index: 100;
   display: flex;
   align-items: center;
-  background: #9000ff !important;
+  background: green !important;
   color: white !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -28,9 +28,10 @@ const PlayIcon = styled.div`
 const Card = styled(Link)`
 position: relative;
 text-decoration: none;
-background-color: ${({ theme }) => theme.card};
+background-color: #111827;
+border : 1px solid black;
 max-width: 220px;
-height: 280px;
+height: 300px;
 display: flex;
 flex-direction: column;
 justify-content: flex-start;
@@ -57,6 +58,14 @@ const Top = styled.div`
   height: 150px;
   position: relative;
 `;
+const MainInfo = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  color: white;
+  justify-content: flex-start;
+  gap: 4px;
+`;
 const Title = styled.div`
   overflow: hidden;
   display: -webkit-box;
@@ -65,7 +74,6 @@ const Title = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${({ theme }) => theme.text_primary};
 `;
 
 const Desc = styled.div`
@@ -76,7 +84,6 @@ const Desc = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${({ theme }) => theme.text_secondary};
   font-size: 12px;
 `;
 
@@ -97,13 +104,7 @@ const CardInfo = styled.div`
   padding: 14px 0px 0px 0px;
   width: 100%;
 `;
-const MainInfo = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 4px;
-`;
+
 const CreatorInfo = styled.div`
   display: flex;
   align-items: center;
@@ -166,7 +167,7 @@ const PodcastCard = () => {
               <div
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
-                <Avatar style={{ width: "35px", height: "35px" }}>S</Avatar>
+                <Avatar style={{ width: "35px", height: "35px", backgroundColor : "green"}}>S</Avatar>
                 <Name>Sumit Das</Name>
               </div>
               <Views>* 12 Views</Views>

@@ -1,60 +1,78 @@
-import { useState } from "react";
-import styled, { ThemeProvider } from "styled-components";
-import { darkTheme, lightTheme } from "./utils/Themes";
-import Sidebar from "./components/Sidebar";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import React, { useEffect, useState } from "react";
+import FloatingShape from "./components/FloatingShape";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Favourite from "./pages/Favourite";
 import Search from "./pages/Search";
-import DisplayPodcast from "./pages/DisplayPodcast";
-import Profile from "./pages/Profile";
-import PodcastDetails from "./pages/PodcastDetails"
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
+import SignUp from "./pages/SignUp";
+import LogIn from "./pages/LogIn";
 
-const Container = styled.div`
-  display: flex;
-  overflow: hidden;
-  background: ${({ theme }) => theme.bgLight};
-  height: 100vh;
-`;
+// import { Toaster } from "react-hot-toast";
 
-const Frame = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 3;
-`;
+// protect routes that require authentication
+// const ProtectedRoute = ({ children }) => {
+//   const { isAuthenticated, user } = useAuthStore();
+
+//   if (!isAuthenticated) {
+//     return <Navigate to="/login" replace />;
+//   }
+
+//   if (!user.isVerified) {
+//     return <Navigate to="/verify-email" replace />;
+//   }
+
+//   return children;
+// };
+
+// redirect authenticated users to the home page
+// const RedirectAuthenticatedUser = ({ children }) => {
+//   const { isAuthenticated, user } = useAuthStore();
+
+//   if (isAuthenticated && user.isVerified) {
+//     return <Navigate to="/" replace />;
+//   }
+
+//   return children;
+// };
 
 function App() {
-  const [darkMode, setDarkMode] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(true);
-
   return (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <BrowserRouter>
-        <Container>
-          {menuOpen && (
-            <Sidebar
-              menuOpen={menuOpen}
-              setMenuOpen={setMenuOpen}
-              setDarkMode={setDarkMode}
-              darkMode={darkMode}
-            />
-          )}
-
-          <Frame>
-            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-            <Routes>
-              <Route path="/" element={<Dashboard/>}/>
-              <Route path="/favourites" element={<Favourite/>}/>
-              <Route path="/search" element={<Search/>}/>
-              <Route path="/profile" element={<Profile/>}/>
-              <Route path="/podcast/:id" element={<PodcastDetails/>}/>
-              <Route path="/showpodcasts/:type" element={<DisplayPodcast/>}/>
-            </Routes>
-          </Frame>
-        </Container>
-      </BrowserRouter>
-    </ThemeProvider>
+    <>
+      <div
+        className="w-full bg-gradient-to-br
+    from-gray-900 via-green-900 to-emerald-900 flex items-center justify-center relative overflow-hidden"
+      >
+        <FloatingShape
+          color="bg-green-500"
+          size="w-64 h-64"
+          top="-5%"
+          left="10%"
+          delay={0}
+        />
+        <FloatingShape
+          color="bg-emerald-500"
+          size="w-48 h-48"
+          top="70%"
+          left="80%"
+          delay={5}
+        />
+        <FloatingShape
+          color="bg-lime-500"
+          size="w-32 h-32"
+          top="40%"
+          left="-10%"
+          delay={2}
+        />
+        <Routes>
+          <Route path="/" element={"Home"} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<LogIn />} />
+        </Routes>
+      </div>
+    </>
   );
 }
 
