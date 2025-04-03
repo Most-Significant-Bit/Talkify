@@ -3,8 +3,7 @@ import FloatingShape from "./components/FloatingShape";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Search from "./pages/Search";
-import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
+import Upload from "./pages/Upload"
 import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
 
@@ -70,6 +69,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<LogIn />} />
+          <Route path="/upload" element={<Upload />} />
         </Routes>
       </div>
     </>
