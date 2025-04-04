@@ -1,12 +1,12 @@
 // const express = require('express');
 import express from "express";
-import dotenv from "dotenv";
+import 'dotenv/config';
 // import cors from 'cors';
 import cookieParser from "cookie-parser";
 import {connectDB} from "./db/connectDb.js";
 import authRoutes from "./routes/auth.routes.js"
+import episodeRoutes from "./routes/episode.routes.js"
 
-dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -20,6 +20,8 @@ app.use(cookieParser());
 
 
 app.use("/api/auth", authRoutes);
+app.use("/user/episode",episodeRoutes);
+
 
 app.listen(PORT, ()=>{
     connectDB();
