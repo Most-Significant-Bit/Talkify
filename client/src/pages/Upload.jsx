@@ -74,7 +74,7 @@ export default function UploadForm() {
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-400 placeholder-gray-400 transition duration-200"
+              className="w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 cursor-pointer focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-400 placeholder-gray-400 transition duration-200"
             >
               <option value="">Select Category</option>
               <option value="comedy">Comedy</option>
@@ -97,8 +97,10 @@ export default function UploadForm() {
                 htmlFor="episode-upload"
                 className="cursor-pointer text-gray-400"
               >
+              {
+                (formData.episode == null) ? "Upload your episode" : formData.episode?.name
+              }  
                 
-                Upload your episode
               </label>
             </div>
 

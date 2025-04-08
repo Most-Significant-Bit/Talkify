@@ -3,39 +3,47 @@ import FloatingShape from "./components/FloatingShape";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Search from "./pages/Search";
-import Upload from "./pages/Upload"
+import Upload from "./pages/Upload";
 import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
+import Profile from "./pages/Profile";
+import { useAuthStore } from "./store/authStore";
+import LoadingSpinner from "../src/components/LoadingSpinner";
+import VideoPlayer from "./components/VideoPlayer"
 
 // import { Toaster } from "react-hot-toast";
 
 // protect routes that require authentication
-// const ProtectedRoute = ({ children }) => {
-//   const { isAuthenticated, user } = useAuthStore();
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuthStore();
 
-//   if (!isAuthenticated) {
-//     return <Navigate to="/login" replace />;
-//   }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-//   if (!user.isVerified) {
-//     return <Navigate to="/verify-email" replace />;
-//   }
-
-//   return children;
-// };
+  return children;
+};
 
 // redirect authenticated users to the home page
-// const RedirectAuthenticatedUser = ({ children }) => {
-//   const { isAuthenticated, user } = useAuthStore();
+const RedirectAuthenticatedUser = ({ children }) => {
+  const { isAuthenticated, user } = useAuthStore();
 
-//   if (isAuthenticated && user.isVerified) {
-//     return <Navigate to="/" replace />;
-//   }
-
-//   return children;
-// };
+  if (isAuthenticated && user.isVerified) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
 
 function App() {
+
+  const { isCheckingAuth, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+      checkAuth();
+    }, [checkAuth]);
+  
+    if(isCheckingAuth) return <LoadingSpinner/>
+
   return (
     <>
       <div
@@ -65,11 +73,43 @@ function App() {
         />
         <Routes>
           <Route path="/" element={"Home"} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/search" element={<Search />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<LogIn />} />
+          <Route
+            path="/signup"
+            element={
+              <SignUp />
+              // <RedirectAuthenticatedUser>
+              //
+              // </RedirectAuthenticatedUser>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <LogIn />
+              //   <RedirectAuthenticatedUser>
+
+              // </RedirectAuthenticatedUser>
+            }
+          />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/podcast/:id" element={<VideoPlayer />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </>

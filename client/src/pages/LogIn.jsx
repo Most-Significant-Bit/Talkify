@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Input from "../components/Input";
 import { Lock, Mail, Loader } from "lucide-react";
-import { Link } from "react-router-dom";
-// import { useAuthStore } from "../store/authStore";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
 const LogInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //   const { login, isLoading, error } = useAuthStore();
-  const isLoading = false;
+  const { login, isLoading, error } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // await login(email, password);
+    await login(email, password);
+    navigate("/dashboard");
   };
 
   return (
@@ -53,7 +54,7 @@ const LogInPage = () => {
             </Link>
           </div>
 
-          {/* {error && <p className="text-red-500 font-semibold mt-2">{error}</p>} */}
+          {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
 
           <motion.button
             className="mt-5 w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white 

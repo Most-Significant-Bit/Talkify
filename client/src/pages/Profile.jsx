@@ -2,12 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 import PodcastCard from '../components/PodcastCard.jsx';
 import {Avatar}  from '@mui/material';
+import { useAuthStore } from '../store/authStore.js';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileMain = styled.div`
 padding: 20px 30px;
 padding-bottom: 200px;
 height: 100%;
-overflow-y: scroll;
 display: flex;
 flex-direction: column;
 gap: 20px;
@@ -89,6 +90,20 @@ font-weight:500;
 
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const {logout} = useAuthStore();
+
+  const handleClick = async() =>{
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+    
+    
+  }
+
   return (
     <ProfileMain>
       <UserDetails>
@@ -105,6 +120,7 @@ const Profile = () => {
           <ProfileEmail>
             sumit@gmail.com
           </ProfileEmail>
+          <a onClick={handleClick}>Logout</a>
         </ProfileContainer>
       </UserDetails>
       <FilterContainer>

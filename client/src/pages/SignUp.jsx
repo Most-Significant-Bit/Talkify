@@ -4,25 +4,24 @@ import Input from "../components/Input";
 import { Loader, Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
-// import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/authStore";
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const isLoading = false;
 
-  // const { signup, error, isLoading } = useAuthStore();
+  const { signup, error, isLoading } = useAuthStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   await signup(email, password, name);
-    //   navigate("/verify-email");
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      await signup(email, password, name);
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -62,7 +61,7 @@ const SignUpPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {/* {error && <p className="text-red-500 font-semibold mt-2">{error}</p>} */}
+          {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
 
           <PasswordStrengthMeter password={password} />
 
