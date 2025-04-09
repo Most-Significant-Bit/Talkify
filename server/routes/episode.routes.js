@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllEpisodes, uploadEpisode, updateEpisode, deleteEpisode,getMyEpisodes } from '../controllers/episode.controllers.js'
+import { getAllEpisodes, uploadEpisode, updateEpisode, deleteEpisode,getMyEpisodes, getEpisodeById } from '../controllers/episode.controllers.js'
 import { verifyToken } from '../middlewares/verifyToken.js';
 import upload from '../middlewares/multer.js'
 
@@ -29,6 +29,8 @@ router.put('/update/:id',verifyToken,upload.fields([
 router.delete('/delete/:id',verifyToken,deleteEpisode);
 router.get('/getAll',verifyToken,getAllEpisodes);
 router.get('/myEpisodes',verifyToken,getMyEpisodes);
+router.get('/:id',verifyToken,getEpisodeById);
+
 
 
 export default router;
