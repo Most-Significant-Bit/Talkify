@@ -46,7 +46,6 @@ export const uploadEpisode = async (req, res) => {
   }
 };
 
-
 export const getAllEpisodes = async (req, res) => {
   try {
     const episodes = await Episode.find().populate("createdBy");
@@ -55,8 +54,6 @@ export const getAllEpisodes = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 
 export const getEpisodeById = async (req, res) => {
     try {

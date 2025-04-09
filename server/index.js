@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 
 app.use("/api/auth", authRoutes);
-app.use("/user/episode",episodeRoutes);
+app.use("/api/episode",episodeRoutes);
 
 
 app.listen(PORT, ()=>{
