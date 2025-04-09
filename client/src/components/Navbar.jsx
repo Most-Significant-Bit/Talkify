@@ -3,6 +3,8 @@ import { FiUser } from "react-icons/fi";
 import { motion } from "framer-motion";
 import Logo from "../images/Logo.png"
 import { Link } from "react-router-dom";
+import { FiPlus } from "react-icons/fi";
+
 
 function Navbar() {
   return (
@@ -22,7 +24,7 @@ function Navbar() {
       
       {/* Right Section */}
       <div className="flex space-x-7 pr-6">
-        <Link to="/upload" className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500">Upload</Link>
+        <Link to="/upload" className="px-4 py-1 bg-blue-600 rounded hover:bg-blue-500">Create</Link>
         <Link to="/profile" className="p-2 bg-green-700 rounded-full">
           <FiUser className="text-xl" />
         </Link>

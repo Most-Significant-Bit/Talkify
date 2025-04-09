@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Avatar from "@mui/material/Avatar";
 import FavouriteIcon from "@mui/icons-material/Favorite";
 import { IconButton } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HeadphonesIcon from "@mui/icons-material/Headphones";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
@@ -26,30 +26,30 @@ const PlayIcon = styled.div`
 `;
 
 const Card = styled(Link)`
-position: relative;
-text-decoration: none;
-background-color: #111827;
-border : 1px solid black;
-max-width: 220px;
-height: 300px;
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-align-items: center;
-padding: 16px;
-border-radius: 6px;  
-box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.1);
-&:hover{
-  cursor: pointer;
-  transform: translateY(-8px);
-  transition: all 0.4s ease-in-out;
-  box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
-  filter: brightness(1.3);
-}
-&:hover ${PlayIcon}{
+  position: relative;
+  text-decoration: none;
+  background-color: #111827;
+  border: 1px solid black;
+  max-width: 220px;
+  height: 300px;
   display: flex;
-}
-`
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px;
+  border-radius: 6px;
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.1);
+  &:hover {
+    cursor: pointer;
+    transform: translateY(-8px);
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.3);
+    filter: brightness(1.3);
+  }
+  &:hover ${PlayIcon} {
+    display: flex;
+  }
+`;
 
 const Top = styled.div`
   display: flex;
@@ -142,48 +142,60 @@ const Views = styled.div`
   width: max-content;
 `;
 
+function getFirstLetter(name) {
+  if (typeof name !== 'string' || name.length === 0) {
+    return ''; // Return an empty string if the input is not a valid string
+  }
+  return name.charAt(0);
+}
 
 
-const PodcastCard = () => {
+const PodcastCard = ({data}) => {
+  
   return (
-    <Card>
-      <div>
+      <Card to={`/podcast/${data?._id}`}>
         <Top>
           <Favourite>
             <FavouriteIcon />
           </Favourite>
 
-          <CardImage src="https://img.freepik.com/free-vector/detailed-podcast-logo-template_23-2148786067.jpg" />
+          <CardImage src={data?.thumbnail} />
         </Top>
 
         <CardInfo>
           <MainInfo>
-            <Title>The Tim Ferris Show</Title>
+            <Title>{data?.title}</Title>
             <Desc>
-              It is a podcast hostes by An Intrepreneur, and public speaker. He
-              is a pure gentle man.
+              {data?.description}
             </Desc>
             <CreatorInfo>
               <div
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
-                <Avatar style={{ width: "35px", height: "35px", backgroundColor : "green"}}>S</Avatar>
-                <Name>Sumit Das</Name>
+                <Avatar
+                  style={{
+                    width: "35px",
+                    height: "35px",
+                    backgroundColor: "green",
+                  }}
+                >
+                  { getFirstLetter(data?.createdBy.name)}
+                </Avatar>
+                <Name>{data?.createdBy.name}</Name>
               </div>
               <Views>* 12 Views</Views>
             </CreatorInfo>
           </MainInfo>
         </CardInfo>
-      </div>
 
-      <PlayIcon>
-        { (true) ?
-        <PlayArrowIcon style={{ width: '28px', height: '28px' }} />
-        :
-          <HeadphonesIcon style={{ width: '28px', height: '28px' }} />
-        }
-      </PlayIcon>
-    </Card>
+        <PlayIcon>
+          {true ? (
+            <PlayArrowIcon style={{ width: "28px", height: "28px" }} />
+          ) : (
+            <HeadphonesIcon style={{ width: "28px", height: "28px" }} />
+          )}
+        </PlayIcon>
+      </Card>
   );
 };
 

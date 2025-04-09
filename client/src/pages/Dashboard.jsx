@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PodcastCard from "../components/PodcastCard";
 import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+
+import { useEpisodeStore } from "../store/episodeStore";
+import axios from "axios";
+
+const CLIENT_URL = "http://localhost:5000/api/episode";
+
+axios.defaults.withCredentials = true;
 
 const DashboardMain = styled.div`
   padding: 20px 30px;
@@ -68,10 +74,27 @@ const Podcasts = styled.div`
 `;
 
 const Dashboard = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${CLIENT_URL}/getAll`);
+      // console.log(response.data);
+      setData(response.data.reverse());
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Handle errors here
+    }
+  };
+
+  // useEffect to fetch once on mount
+  useEffect(() => {
+    fetchData();
+  }, []); // ✅ empty dependency array so it runs once
+
   return (
     <>
-      <Navbar isOpen={isOpen} toggleSidebar={() => setIsOpen(!isOpen)} />
+      <Navbar />
       <DashboardMain>
         <Container>
           <Topic>
@@ -84,10 +107,14 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            <PodcastCard />
-            <PodcastCard />
-            <PodcastCard />
-            <PodcastCard />
+            {data.length > 0 ? (
+              data.map((item, index) => {
+                // console.log("DATA ITEM:", index, item); // 👈 see what's inside!
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
           </Podcasts>
         </Container>
 
