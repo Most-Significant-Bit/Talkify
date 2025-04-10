@@ -39,30 +39,44 @@ export const useEpisodeStore = create((set)=> ({
         }
       },
       
-      getAll: async () => {
-        // Clear any existing errors
-        set({ error: null });
+      // getAll: async () => {
+      //   // Clear any existing errors
+      //   set({ error: null });
       
+      //   try {
+      //     // Perform the GET request
+      //     const response = (await axios.get(`${CLIENT_URL}/getAll`)).data;
+      
+      //     // Log the full response for debugging
+      //     console.log(response);
+      
+      //     // Update the state with the fetched data
+      //     set({ episode: response.data });
+      //   } catch (error) {
+      //     // Extract the error message, defaulting to a generic message if not available
+      //     const errorMessage = error?.response?.data?.message || "Error in Getting Videos";
+      
+      //     // Update the state with the error message
+      //     set({ error: errorMessage });
+      
+      //     // Optionally, re-throw the error if further handling is needed
+      //     throw error;
+      //   }
+      // }
+      
+      getEpisode : async (id) => {
+        set({ isLoading : true, error : null});
         try {
-          // Perform the GET request
-          const response = (await axios.get(`${CLIENT_URL}/getAll`)).data;
-      
-          // Log the full response for debugging
-          console.log(response);
-      
-          // Update the state with the fetched data
-          set({ episode: response.data });
+          const response = (await axios.get(`${CLIENT_URL}/${id}`)).data;
+          set({ episode : response, isLoading : false, error : null})
         } catch (error) {
-          // Extract the error message, defaulting to a generic message if not available
-          const errorMessage = error?.response?.data?.message || "Error in Getting Videos";
-      
-          // Update the state with the error message
-          set({ error: errorMessage });
-      
-          // Optionally, re-throw the error if further handling is needed
+          set({
+            error: error?.response?.data?.message || "Error in getting episode",
+            isLoading: false,
+          });
           throw error;
         }
       }
-      
+
 })
 )

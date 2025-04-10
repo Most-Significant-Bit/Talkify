@@ -6,6 +6,8 @@ import { CgMiniPlayer } from "react-icons/cg";
 import { RiFullscreenExitLine, RiFullscreenFill } from "react-icons/ri";
 import { BiLike, BiDislike } from "react-icons/bi";
 import { CiSaveDown2 } from "react-icons/ci";
+import { useEpisodeStore } from "../store/episodeStore";
+import { useParams } from "react-router-dom";
 
 const CustomVideoPlayer = () => {
   const videoRef = useRef(null);
@@ -18,7 +20,17 @@ const CustomVideoPlayer = () => {
   const [speed, setSpeed] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  
+  const {id} = useParams();
+  
+  const { getEpisode, episode, error} = useEpisodeStore();
+  // console.log(id);
+  
+
   useEffect(() => {
+
+    getEpisode(id);
+
     const video = videoRef.current;
 
     const formatTime = (time) => {
@@ -47,6 +59,7 @@ const CustomVideoPlayer = () => {
     return () => {
       video.removeEventListener("timeupdate", updateTime);
     };
+
   }, []);
 
   const togglePlay = () => {
@@ -101,13 +114,14 @@ const CustomVideoPlayer = () => {
     }
   };
 
+  
   return (
     <div className="w-full h-200 mt-30 max-w-3xl mx-auto">
       <Navbar />
       <div className="relative aspect-video bg-black rounded-xl overflow-hidden border-4 border-green-500">
         <video
           ref={videoRef}
-          src="https://www.w3schools.com/html/mov_bbb.mp4"
+          src={episode?.video}
           className="w-full h-full object-cover cursor-pointer"
           onClick={togglePlay}
         ></video>
@@ -173,7 +187,7 @@ const CustomVideoPlayer = () => {
 
       <div className="mt-4">
         <h2 className="text-xl font-bold text-white">
-          Amazing Green-Themed Video
+          { episode?.title}
         </h2>
         <div className="flex justify-between items-center mt-2">
           <div className="flex items-center gap-4">
@@ -183,7 +197,7 @@ const CustomVideoPlayer = () => {
                 alt=""
               />
             </div>
-            <span className="text-white font-medium cursor-pointer">Greenify Studio</span>
+            <span className="text-white font-medium cursor-pointer">{ episode?.createdBy?.name}</span>
             <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 cursor-pointer rounded-lg text-sm">
               Follow
             </button>
@@ -198,9 +212,7 @@ const CustomVideoPlayer = () => {
           </div>
         </div>
         <p className="mt-3 text-gray-300">
-          This video showcases the custom green-themed video player built using
-          React and Tailwind CSS. It supports click-to-play/pause, full screen,
-          playback speed, volume, and more.
+         { episode?.description}
         </p>
       </div>
     </div>

@@ -57,7 +57,7 @@ export const getAllEpisodes = async (req, res) => {
 
 export const getEpisodeById = async (req, res) => {
     try {
-      const episode = await Episode.findById(req.params.id).populate("podcastId");
+      const episode = await Episode.findById(req.params.id).populate("createdBy");
       if (!episode) return res.status(404).json({ message: "Episode not found" });
       res.json(episode);
     } catch (error) {
