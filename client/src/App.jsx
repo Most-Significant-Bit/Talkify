@@ -103,7 +103,7 @@ function App() {
           <Route path="/upload" element={<Upload />} />
           <Route path="/podcast/:id" element={<VideoPlayer />} />
           <Route
-            path="/profile"
+            path="/profile/:userId"
             element={
               <ProtectedRoute>
                 <Profile />

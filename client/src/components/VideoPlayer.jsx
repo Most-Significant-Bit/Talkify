@@ -20,15 +20,12 @@ const CustomVideoPlayer = () => {
   const [speed, setSpeed] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  
-  const {id} = useParams();
-  
-  const { getEpisode, episode, error} = useEpisodeStore();
+  const { id } = useParams();
+
+  const { getEpisode, episode, error } = useEpisodeStore();
   // console.log(id);
-  
 
   useEffect(() => {
-
     getEpisode(id);
 
     const video = videoRef.current;
@@ -59,7 +56,6 @@ const CustomVideoPlayer = () => {
     return () => {
       video.removeEventListener("timeupdate", updateTime);
     };
-
   }, []);
 
   const togglePlay = () => {
@@ -114,7 +110,6 @@ const CustomVideoPlayer = () => {
     }
   };
 
-  
   return (
     <div className="w-full h-200 mt-30 max-w-3xl mx-auto">
       <Navbar />
@@ -186,18 +181,25 @@ const CustomVideoPlayer = () => {
       </div>
 
       <div className="mt-4">
-        <h2 className="text-xl font-bold text-white">
-          { episode?.title}
-        </h2>
+        <div className="flex gap-1.5">
+          <h2 className="text-xl font-bold text-white mr-4">{episode?.title}</h2>
+        {episode?.tags.map((item, index) => (
+          <h5 key={index} className="text-green-500 mt-1">{`#${item}`}</h5>
+        ))}
+        </div>
+        
         <div className="flex justify-between items-center mt-2">
           <div className="flex items-center gap-4">
             <div className="bg-green-600 text-white px-4 py-2 text-2xl rounded-full cursor-pointer">
-              <img className="w-8 h-8"
+              <img
+                className="w-8 h-8"
                 src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
                 alt=""
               />
             </div>
-            <span className="text-white font-medium cursor-pointer">{ episode?.createdBy?.name}</span>
+            <span className="text-white font-medium cursor-pointer">
+              {episode?.createdBy?.name}
+            </span>
             <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 cursor-pointer rounded-lg text-sm">
               Follow
             </button>
@@ -211,9 +213,7 @@ const CustomVideoPlayer = () => {
             </button>
           </div>
         </div>
-        <p className="mt-3 text-gray-300">
-         { episode?.description}
-        </p>
+        <p className="mt-3 text-gray-300">{episode?.description}</p>
       </div>
     </div>
   );

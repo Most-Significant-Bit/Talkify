@@ -1,140 +1,107 @@
-import React from 'react'
-import styled from 'styled-components'
-import PodcastCard from '../components/PodcastCard.jsx';
-import {Avatar}  from '@mui/material';
-import { useAuthStore } from '../store/authStore.js';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
 
-const ProfileMain = styled.div`
-padding: 20px 30px;
-padding-bottom: 200px;
-height: 100%;
-display: flex;
-flex-direction: column;
-gap: 20px;
-`
+import { AiOutlineLogout } from "react-icons/ai";
 
-const UserDetails = styled.div`
-display flex;
-gap: 120px;
-@media (max-width: 768px) {
-    width: fit-content;
-    flex-direction: column; 
-    gap: 20px;
-    justify-content: center;
-    align-items: center;
-  }
-`
+import { CheckCircle2 } from "lucide-react";
+import PodcastCard from "../components/PodcastCard"; // assuming you have this component
+import Navbar from "../components/Navbar";
 
-
-const FilterContainer = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-${({ box, theme }) => box && `
-background-color: ${theme.bg};
-  border-radius: 10px;
-  padding: 20px 30px;
-`}
-`;
-
-const Topic = styled.div`
-  color: ${({ theme }) => theme.text_primary};
-  font-size: 24px;
-  font-weight: 540;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Podcasts = styled.div`
-display: flex;
-flex-wrap: wrap;
-gap: 14px;
-padding: 18px 6px;
-@media (max-width: 550px){
-  justify-content: center;
-}
-`;
-
-
-const ProfileAvatar = styled.div`
-  padding-left:3rem;
-  @media (max-width: 768px) {
-    padding-left:0rem;
-    }
-`
-
-const ProfileContainer = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-@media (max-width: 768px) {
-    align-items: center;
-  }
-`
-
-
-const ProfileEmail = styled.div`
-color:#2b6fc2;
-font-size:14px;
-font-weight:400;
-`
-
-const ProfileName = styled.div`
-color: ${({ theme }) => theme.text_primary};
-font-size:34px;
-font-weight:500;
-`
-
-
+const isVerified = true; // Example flag, can be dynamic
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const {logout} = useAuthStore();
+  const [isFollowing, setIsFollowing] = useState(false);
 
-  const handleClick = async() =>{
-    try {
-      await logout();
-      navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
-    
-    
-  }
+  const handleFollowToggle = () => {
+    setIsFollowing((prev) => !prev);
+  };
 
   return (
-    <ProfileMain>
-      <UserDetails>
-        <ProfileAvatar>
-          <Avatar sx={{ height: 165, width: 165 , fontSize: '24px'}} >
+    <>
+      <Navbar />
+      <div className="w-300 mt-15 min-h-screen text-white p-6">
+        {/* Header Section */}
+        <div className="flex justify-between items-center p-10 mb-4">
+          {/* Avatar */}
+          <div className="flex items-center gap-4">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNiF96dKTOvN0Ai2EJU-EPXQl6vTQCXB209g&s" // Replace with dynamic image if needed
+              alt="Profile"
+              className="w-24 h-24 rounded-full border-4 border-green-500"
+            />
+            <div className="flex flex-col items-start">
+              <div className="flex items-center">
+                <h1 className="text-3xl font-bold mr-4">Himadri</h1>
+                {isVerified ? (
+                  <div className="flex items-center gap-1 text-green-400 mt-1">
+                    <CheckCircle2 className="w-5 h-5" /> Verified
+                  </div>
+                ) : (
+                  <button className="bg-transparent border-2 border-green-500 hover:bg-green-500 px-4 py-1 rounded-full cursor-pointer text-white">
+                    Verify Account
+                  </button>
+                )}
+              </div>
 
-          </Avatar>
-        </ProfileAvatar>
+              {/* Toggle Follow Button */}
+              <button
+                onClick={handleFollowToggle}
+                className={`mt-2 flex items-center gap-2 px-4 py-1 rounded-full cursor-pointer text-white text-sm border-2 transition-all duration-200
+      ${
+        isFollowing
+          ? "bg-blue-500 border-blue-500 hover:bg-transparent"
+          : "bg-transparent border-blue-500 hover:bg-blue-500"
+      }`}
+              >
+                {isFollowing ? "Following" : "Follow"}
+              </button>
+            </div>
+          </div>
 
-        <ProfileContainer>
-          <ProfileName>
-            Sumit
-          </ProfileName>
-          <ProfileEmail>
-            sumit@gmail.com
-          </ProfileEmail>
-          <a onClick={handleClick}>Logout</a>
-        </ProfileContainer>
-      </UserDetails>
-      <FilterContainer>
-        <Topic>
-          Your Favorites
-        </Topic>
-        <Podcasts>
-          <PodcastCard />
-          <PodcastCard />
-          <PodcastCard />
-        </Podcasts>
-      </FilterContainer>
-    </ProfileMain>
-  )
-}
+          {/* Logout */}
+          <button className="flex items-center gap-2 bg-transparent border-2 border-red-500 hover:bg-red-500 px-4 py-1 rounded-full cursor-pointer text-white">
+            Logout{" "}
+            <AiOutlineLogout style={{ color: "red", fontSize: "20px" }} />
+          </button>
+        </div>
+
+        {/* Stats Section */}
+        <div className="flex justify-start gap-12 text-center mb-8 pl-6">
+          <div>
+            <p className="text-2xl font-semibold text-green-500">14</p>
+            <p className="text-gray-300">Podcasts</p>
+          </div>
+          <div>
+            <p className="text-2xl font-semibold text-green-500">0</p>
+            <p className="text-gray-300 ">Followers</p>
+          </div>
+          <div>
+            <p className="text-2xl font-semibold text-green-500">25</p>
+            <p className="text-gray-300">Following</p>
+          </div>
+        </div>
+
+        {/* Favorite Podcasts Section */}
+        <div className="mb-8 pl-6">
+          <h2 className="text-2xl font-bold mb-4">Favorite Podcasts</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {/* Repeat your PodcastCard component */}
+            <PodcastCard />
+            <PodcastCard />
+            <PodcastCard />
+          </div>
+        </div>
+
+        {/* My Podcasts Section */}
+        <div className="pl-6">
+          <h2 className="text-2xl font-bold mb-4">My Podcasts</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <PodcastCard />
+            <PodcastCard />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default Profile;
