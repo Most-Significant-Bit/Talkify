@@ -166,32 +166,49 @@ export const getMyEpisodes = async (req,res) =>{
     }
 }
 
-export const favoriteEpisode = async (req,res)=>{
-  try
-  {
+export const favoriteEpisode = async (req, res) => {
+  try {
     const user = req.userId;
     const episode = await Episode.findById(req.params.id);
-    if(episode.favorite_by.includes(user)){
-      return res.status(500).json({
-        error: 'Already Liked'
-      })
+
+    if (!episode) {
+      return res.status(404).json({ error: 'Episode not found' });
     }
+
+    const userIdStr = user.toString();
+    const alreadyFavorited = episode.favorite_by.some(u => u.toString() === userIdStr);
+
+    if (alreadyFavorited) {
+      // Remove user from favorite_by and decrement favorites
+      episode.favorite_by = episode.favorite_by.filter(u => u.toString() !== userIdStr);
+      episode.favorites = Math.max(0, episode.favorites - 1); // prevent negative count
+      await episode.save();
+
+      return res.status(200).json({
+        message: 'Disliked'
+      });
+    }
+
+    // Add user to favorite_by and increment favorites
+    episode.favorite_by.push(user);
     episode.favorites += 1;
-    episode.favorite_by.push(user)
     await episode.save();
+
     res.status(200).json({
-      message: "Liked"
-    })
-  } catch(error){
-    console.log(error)
+      message: 'Liked'
+    });
+
+  } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: error.message
-    })
+    });
   }
-}
+};
+
 
 export const searchEpisodesByCategory = async (req, res) => {
-    const { category } = req.query;
+    const category  = req.query.category;
 
     if (!category) {
         return res.status(400).json({ error: "Category is required in query parameters." });

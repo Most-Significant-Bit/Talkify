@@ -5,6 +5,13 @@ export const followUser = async (req,res) =>{
         {
           const channelId = await User.findById(req.params.id)
           const user = req.userId;
+
+          if(channelId._id == user){
+            return res.status(500).json({
+              error: "Cannot follow your own account"
+            })
+          }
+
           if(channelId.followed_by.includes(user)){
             return res.status(500).json({
                 error: 'Already Followed'
@@ -15,7 +22,7 @@ export const followUser = async (req,res) =>{
           await channelId.save();
 
           const userData =  await User.findById(user);
-          userData.following_to.push(req.params.id);
+          userData.following_to.push(channelId);
           userData.following += 1;
           await userData.save();
 
