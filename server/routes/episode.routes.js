@@ -31,7 +31,7 @@ router.get('/getAll',verifyToken,getAllEpisodes);
 router.get('/myEpisodes',verifyToken,getMyEpisodes);
 router.get('/:id',verifyToken,getEpisodeById);
 router.put('/favorite/:id',verifyToken,favoriteEpisode)
-router.get('/category',verifyToken,searchEpisodesByCategory)
+router.get('/search',verifyToken,searchEpisodesByCategory)
 
 
 export default router;
