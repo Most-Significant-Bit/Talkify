@@ -9,6 +9,8 @@ const episodeSchema = new mongoose.Schema({
     video: {type: String, required: true},
     tags: [{type: String}],
     duration: { type: Number, required: true }, // in seconds
+    favorite_by:[{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+    favorites:{type: Number, default: 0}
 },{timestamps: true})
 
 const Episode = mongoose.model("Episode",episodeSchema)
