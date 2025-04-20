@@ -1,4 +1,5 @@
 import Episode from '../models/episode.model.js';
+import {User} from '../models/user.model.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js'
 
 
@@ -37,7 +38,12 @@ export const uploadEpisode = async (req, res) => {
       duration: video?.duration || 0
     });
 
-    
+      await User.findByIdAndUpdate(
+        creator,
+        {
+          $addToSet: {episodes_by_user: episode._id}
+        }
+      )
       res.status(200).json(episode);
     
 
@@ -159,3 +165,48 @@ export const getMyEpisodes = async (req,res) =>{
         res.status(400).json({message: error.message});
     }
 }
+
+export const favoriteEpisode = async (req,res)=>{
+  try
+  {
+    const user = req.userId;
+    const episode = await Episode.findById(req.params.id);
+    if(episode.favorite_by.includes(user)){
+      return res.status(500).json({
+        error: 'Already Liked'
+      })
+    }
+    episode.favorites += 1;
+    episode.favorite_by.push(user)
+    await episode.save();
+    res.status(200).json({
+      message: "Liked"
+    })
+  } catch(error){
+    console.log(error)
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
+export const searchEpisodesByCategory = async (req, res) => {
+    const { category } = req.query;
+
+    if (!category) {
+        return res.status(400).json({ error: "Category is required in query parameters." });
+    }
+
+    try {
+        const episodes = await Episode.find({ category: { $regex: new RegExp(category, "i") } });
+
+        if (episodes.length === 0) {
+            return res.status(404).json({ message: "No episodes found for the given category." });
+        }
+
+        res.status(200).json(episodes);
+    } catch (error) {
+        console.error("Error searching episodes by category:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
