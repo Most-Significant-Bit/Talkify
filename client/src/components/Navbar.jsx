@@ -3,10 +3,16 @@ import { FiUser } from "react-icons/fi";
 import { motion } from "framer-motion";
 import Logo from "../images/Logo.png"
 import { Link } from "react-router-dom";
-import { FiPlus } from "react-icons/fi";
+import { useAuthStore } from "../store/authStore";
+
 
 
 function Navbar() {
+
+  const { user, error} = useAuthStore();
+  console.log(user);
+  
+
   return (
     <nav className="fixed top-0 left-0 h-21 w-full bg-gray-900 text-white p-4 flex justify-between items-center z-50">
       {/* Left Section */}
@@ -24,8 +30,8 @@ function Navbar() {
       
       {/* Right Section */}
       <div className="flex space-x-7 pr-6">
-        <Link to="/upload" className="px-4 py-1 bg-blue-600 rounded hover:bg-blue-500">Create</Link>
-        <Link to="/profile" className="p-2 bg-green-700 rounded-full">
+        <Link to="/upload" className="px-4 py-1 bg-transparent border-2 border-blue-600 rounded-full hover:bg-blue-500">Create</Link>
+        <Link to={`/profile/${user._id}`} className="p-2 bg-green-700 rounded-full">
           <FiUser className="text-xl" />
         </Link>
       </div>
