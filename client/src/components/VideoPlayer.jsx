@@ -4,10 +4,16 @@ import Navbar from "./Navbar";
 import { PauseIcon, PlayIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { CgMiniPlayer } from "react-icons/cg";
 import { RiFullscreenExitLine, RiFullscreenFill } from "react-icons/ri";
-import { BiLike, BiDislike } from "react-icons/bi";
+import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { CiSaveDown2 } from "react-icons/ci";
 import { useEpisodeStore } from "../store/episodeStore";
 import { useParams } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+const CLIENT_URL = "http://localhost:5000/api/episode";
 
 const CustomVideoPlayer = () => {
   const videoRef = useRef(null);
@@ -19,11 +25,18 @@ const CustomVideoPlayer = () => {
   const [duration, setDuration] = useState("00:00");
   const [speed, setSpeed] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const { id } = useParams();
 
-  const { getEpisode, episode, error } = useEpisodeStore();
+  const { getEpisode, episode } = useEpisodeStore();
   // console.log(id);
+  const { user: currentUser } = useAuthStore();
+
+  const handleLikeChange = async () => {
+    await axios.put(`${CLIENT_URL}/favorite/${id}`);
+    setIsLiked((prev) => !prev);
+  };
 
   useEffect(() => {
     getEpisode(id);
@@ -56,7 +69,7 @@ const CustomVideoPlayer = () => {
     return () => {
       video.removeEventListener("timeupdate", updateTime);
     };
-  }, []);
+  }, [isLiked]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -182,12 +195,14 @@ const CustomVideoPlayer = () => {
 
       <div className="mt-4">
         <div className="flex gap-1.5">
-          <h2 className="text-xl font-bold text-white mr-4">{episode?.title}</h2>
-        {episode?.tags.map((item, index) => (
-          <h5 key={index} className="text-green-500 mt-1">{`#${item}`}</h5>
-        ))}
+          <h2 className="text-xl font-bold text-white mr-4">
+            {episode?.title}
+          </h2>
+          {episode?.tags.map((item, index) => (
+            <h5 key={index} className="text-green-500 mt-1">{`#${item}`}</h5>
+          ))}
         </div>
-        
+
         <div className="flex justify-between items-center mt-2">
           <div className="flex items-center gap-4">
             <div className="bg-green-600 text-white px-4 py-2 text-2xl rounded-full cursor-pointer">
@@ -197,19 +212,32 @@ const CustomVideoPlayer = () => {
                 alt=""
               />
             </div>
-            <span className="text-white font-medium cursor-pointer">
+            <a
+              href={`/profile/${episode?.createdBy?._id}`}
+              className="text-white font-medium cursor-pointer"
+            >
               {episode?.createdBy?.name}
-            </span>
+            </a>
             <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 cursor-pointer rounded-lg text-sm">
               Follow
             </button>
           </div>
           <div className="flex items-center gap-2 mr-5">
-            <button className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm">
-              <BiLike className="w-7 h-7" />
+            
+            <button
+              onClick={handleLikeChange}
+              className="flex gap-1 items-center bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm"
+            >
+              {episode?.favorite_by?.includes(currentUser?._id) ? (
+                <FcLike className="w-8 h-8" />
+              ) : (
+                <FcLikePlaceholder className="w-8 h-8 text-white" />
+              )}
+              <span className="text-white text-2xl">{episode?.favorites}</span>
             </button>
+
             <button className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm">
-              <CiSaveDown2 className="w-7 h-7" />
+              <CiSaveDown2 className="w-8 h-8" />
             </button>
           </div>
         </div>

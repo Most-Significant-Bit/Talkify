@@ -10,7 +10,6 @@ import { useAuthStore } from "../store/authStore";
 function Navbar() {
 
   const { user, error} = useAuthStore();
-  console.log(user);
   
 
   return (

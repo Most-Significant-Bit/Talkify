@@ -6,6 +6,8 @@ import { IconButton } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import HeadphonesIcon from "@mui/icons-material/Headphones";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { useAuthStore } from "../store/authStore";
+import { FcLike } from "react-icons/fc";
 
 const PlayIcon = styled.div`
   padding: 10px;
@@ -31,7 +33,6 @@ const Card = styled(Link)`
   background-color: #111827;
   border: 1px solid black;
   max-width: 220px;
-  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -74,6 +75,7 @@ const Title = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #1fd655;
 `;
 
 const Desc = styled.div`
@@ -152,11 +154,13 @@ function getFirstLetter(name) {
 
 const PodcastCard = ({data}) => {
   
+  const {user : currentUser} = useAuthStore();
+
   return (
       <Card to={`/podcast/${data?._id}`}>
         <Top>
           <Favourite>
-            <FavouriteIcon />
+            { (data?.favorite_by?.includes(currentUser?._id)) ? <FcLike/>  : <FavouriteIcon /> }
           </Favourite>
 
           <CardImage src={data?.thumbnail} />
@@ -183,7 +187,7 @@ const PodcastCard = ({data}) => {
                 </Avatar>
                 <Name>{data?.createdBy.name}</Name>
               </div>
-              <Views>* 12 Views</Views>
+              <Views>• {data?.favorites} Likes</Views>
             </CreatorInfo>
           </MainInfo>
         </CardInfo>
