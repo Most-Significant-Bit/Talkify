@@ -76,7 +76,11 @@ export const useEpisodeStore = create((set)=> ({
           });
           throw error;
         }
-      }
+      },
+
+      // favoriteEpisode : async () => {
+        
+      // }
 
 })
 )

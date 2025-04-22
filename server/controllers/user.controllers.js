@@ -90,10 +90,10 @@ export const followUser = async (req, res) => {
 
 export const getDetails = async (req,res)=>{
     try{
-        const channelDetails = await User.findById(req.params.id);
-        if(channelDetails);
+        const user = await User.findById(req.params.id);
+        if(user);
         res.status(200).json({
-          channelDetails
+          user
         })        
 
     } catch(error){
