@@ -13,7 +13,7 @@ import { useAuthStore } from "../store/authStore";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
-const CLIENT_URL = "http://localhost:5000/api/episode";
+const CLIENT_URL = "http://localhost:5000/api";
 
 const CustomVideoPlayer = () => {
   const videoRef = useRef(null);
@@ -26,16 +26,24 @@ const CustomVideoPlayer = () => {
   const [speed, setSpeed] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const { id } = useParams();
 
   const { getEpisode, episode } = useEpisodeStore();
   // console.log(id);
-  const { user: currentUser } = useAuthStore();
+  const { user: currentUser, checkAuth} = useAuthStore();
 
   const handleLikeChange = async () => {
-    await axios.put(`${CLIENT_URL}/favorite/${id}`);
+    await axios.put(`${CLIENT_URL}/episode/favorite/${id}`);
     setIsLiked((prev) => !prev);
+  };
+
+  const handleToggleFollow = async () => {
+    // Call API here if needed
+    await axios.put(`${CLIENT_URL}/user/follow/${episode?.createdBy?._id}`);
+    setIsFollowing((prev) => !prev);
+    checkAuth();
   };
 
   useEffect(() => {
@@ -69,7 +77,7 @@ const CustomVideoPlayer = () => {
     return () => {
       video.removeEventListener("timeupdate", updateTime);
     };
-  }, [isLiked]);
+  }, [isLiked, isFollowing]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -195,7 +203,7 @@ const CustomVideoPlayer = () => {
 
       <div className="mt-4">
         <div className="flex gap-1.5">
-          <h2 className="text-xl font-bold text-white mr-4">
+          <h2 className="text-2xl font-bold text-white mr-4">
             {episode?.title}
           </h2>
           {episode?.tags.map((item, index) => (
@@ -203,27 +211,43 @@ const CustomVideoPlayer = () => {
           ))}
         </div>
 
-        <div className="flex justify-between items-center mt-2">
+        <div className="flex justify-between items-center mt-4">
           <div className="flex items-center gap-4">
-            <div className="bg-green-600 text-white px-4 py-2 text-2xl rounded-full cursor-pointer">
               <img
-                className="w-8 h-8"
-                src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png"
+                className="w-13 h-13 cursor-pointer border-2 border-green-500 rounded-full"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqkUYrITWyI8OhPNDHoCDUjGjhg8w10_HRqg&s"
                 alt=""
               />
+            <div className="flex flex-col gap-x-0.5">
+              <a
+                href={`/profile/${episode?.createdBy?._id}`}
+                className="text-white text-xl font-medium cursor-pointer"
+              >
+                {episode?.createdBy?.name}
+              </a>
+              <h4 className="text-green-500">
+                {episode?.createdBy?.followers} followers
+              </h4>
             </div>
-            <a
-              href={`/profile/${episode?.createdBy?._id}`}
-              className="text-white font-medium cursor-pointer"
-            >
-              {episode?.createdBy?.name}
-            </a>
-            <button className="bg-green-700 hover:bg-green-800 text-white px-3 py-1 cursor-pointer rounded-lg text-sm">
-              Follow
-            </button>
+
+            {currentUser?._id !== episode?.createdBy?._id ? (
+              <button
+                onClick={handleToggleFollow}
+                className={`${
+                  currentUser?.following_to.includes(episode?.createdBy?._id)
+                    ? "bg-transparent border-2 border-green-500  hover:bg-green-500 text-white"
+                    : "bg-green-700 hover:bg-green-800 text-white"
+                } px-3 py-1 cursor-pointer rounded-lg text-sm`}
+              >
+                {currentUser?.following_to.includes(episode?.createdBy?._id)
+                  ? "Following"
+                  : "Follow"}
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
           <div className="flex items-center gap-2 mr-5">
-            
             <button
               onClick={handleLikeChange}
               className="flex gap-1 items-center bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm"
