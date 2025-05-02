@@ -16,6 +16,7 @@ router.post('/upload',verifyToken,upload.fields([
     }
 ]),uploadEpisode);
 
+router.get('/search',verifyToken,searchEpisodesByCategory)
 router.put('/update/:id',verifyToken,upload.fields([
     {
         name: "thumbnail",
@@ -31,7 +32,7 @@ router.get('/getAll',verifyToken,getAllEpisodes);
 router.get('/userEpisodes/:userId',verifyToken,getUserEpisodes);
 router.get('/:id',verifyToken,getEpisodeById);
 router.put('/favorite/:id',verifyToken,favoriteEpisode)
-router.get('/search',verifyToken,searchEpisodesByCategory)
+
 
 
 export default router;

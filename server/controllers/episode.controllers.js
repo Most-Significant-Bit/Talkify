@@ -215,7 +215,13 @@ export const searchEpisodesByCategory = async (req, res) => {
     }
 
     try {
-        const episodes = await Episode.find({ category: { $regex: new RegExp(category, "i") } });
+        const episodes = await Episode.aggregate([
+          {
+            $match: {
+              category: { $regex: new RegExp(`^${category}$`, 'i') }
+            }
+          }
+        ])
 
         if (episodes.length === 0) {
             return res.status(404).json({ message: "No episodes found for the given category." });
