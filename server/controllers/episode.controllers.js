@@ -156,10 +156,10 @@ export const deleteEpisode = async (req, res) => {
   }
 }
 
-export const getMyEpisodes = async (req,res) =>{
+export const getUserEpisodes = async (req,res) =>{
     try{
-        const userId = req.userId;
-        const episodes = await Episode.find({createdBy: userId});
+        const userId = req.params.userId;
+        const episodes = await Episode.find({createdBy: userId}).populate('createdBy');
         res.status(200).json(episodes);
     } catch(error){
         res.status(400).json({message: error.message});

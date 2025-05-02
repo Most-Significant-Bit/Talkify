@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllEpisodes, uploadEpisode, updateEpisode, deleteEpisode,getMyEpisodes, getEpisodeById, favoriteEpisode, searchEpisodesByCategory } from '../controllers/episode.controllers.js'
+import { getAllEpisodes, uploadEpisode, updateEpisode, deleteEpisode, getEpisodeById, favoriteEpisode, searchEpisodesByCategory, getUserEpisodes } from '../controllers/episode.controllers.js'
 import { verifyToken } from '../middlewares/verifyToken.js';
 import upload from '../middlewares/multer.js'
 
@@ -29,7 +29,7 @@ router.put('/update/:id',verifyToken,upload.fields([
 ]),updateEpisode);
 router.delete('/delete/:id',verifyToken,deleteEpisode);
 router.get('/getAll',verifyToken,getAllEpisodes);
-router.get('/myEpisodes',verifyToken,getMyEpisodes);
+router.get('/userEpisodes/:userId',verifyToken,getUserEpisodes);
 router.get('/:id',verifyToken,getEpisodeById);
 router.put('/favorite/:id',verifyToken,favoriteEpisode)
 
