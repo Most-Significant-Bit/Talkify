@@ -3,11 +3,16 @@ import React, { useEffect, useRef, useState } from "react";
 import Navbar from "./Navbar";
 import { PauseIcon, PlayIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { CgMiniPlayer } from "react-icons/cg";
-import { RiFullscreenExitLine, RiFullscreenFill } from "react-icons/ri";
-import { FcLike, FcLikePlaceholder } from "react-icons/fc";
+import {
+  RiFullscreenExitLine,
+  RiFullscreenFill,
+} from "react-icons/ri";
+import { FcLike ,FcLikePlaceholder } from "react-icons/fc";
+import { AiOutlineDelete } from "react-icons/ai";
 import { CiSaveDown2 } from "react-icons/ci";
+import { CiEdit } from "react-icons/ci";
 import { useEpisodeStore } from "../store/episodeStore";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
 import axios from "axios";
@@ -32,7 +37,7 @@ const CustomVideoPlayer = () => {
 
   const { getEpisode, episode } = useEpisodeStore();
   // console.log(id);
-  const { user: currentUser, checkAuth} = useAuthStore();
+  const { user: currentUser, checkAuth } = useAuthStore();
 
   const handleLikeChange = async () => {
     await axios.put(`${CLIENT_URL}/episode/favorite/${id}`);
@@ -189,7 +194,7 @@ const CustomVideoPlayer = () => {
               <button onClick={toggleMiniPlayer} className="text-white">
                 <CgMiniPlayer className="w-6 h-6" />
               </button>
-              <button onClick={toggleFullscreen} className="text-lg">
+              <button onClick={toggleFullscreen} className="text-lg cursor-pointer">
                 {isFullscreen === false ? (
                   <RiFullscreenFill className="w-6 h-6" />
                 ) : (
@@ -213,11 +218,11 @@ const CustomVideoPlayer = () => {
 
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center gap-4">
-              <img
-                className="w-13 h-13 cursor-pointer border-2 border-green-500 rounded-full"
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqkUYrITWyI8OhPNDHoCDUjGjhg8w10_HRqg&s"
-                alt=""
-              />
+            <img
+              className="w-13 h-13 cursor-pointer border-2 border-green-500 rounded-full"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqkUYrITWyI8OhPNDHoCDUjGjhg8w10_HRqg&s"
+              alt=""
+            />
             <div className="flex flex-col gap-x-0.5">
               <a
                 href={`/profile/${episode?.createdBy?._id}`}
@@ -263,6 +268,24 @@ const CustomVideoPlayer = () => {
             <button className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm">
               <CiSaveDown2 className="w-8 h-8" />
             </button>
+
+            {currentUser?._id === episode?.createdBy?._id ? (
+              <Link to={`/update/${episode?._id}`}>
+                <button className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm">
+                  <CiEdit className="w-8 h-8" />
+                </button>
+              </Link>
+            ) : (
+              <></>
+            )}
+
+            {currentUser?._id === episode?.createdBy?._id ? (
+              <button className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm">
+                <AiOutlineDelete className="w-8 h-8" />
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <p className="mt-3 text-gray-300">{episode?.description}</p>

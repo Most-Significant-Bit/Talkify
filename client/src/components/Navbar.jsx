@@ -1,7 +1,7 @@
 import React,{ useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { motion } from "framer-motion";
-import Logo from "../images/Logo.png"
+import Logo from "../images/Logo1.png"
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
@@ -13,9 +13,10 @@ function Navbar() {
   
 
   return (
-    <nav className="fixed top-0 left-0 h-21 w-full bg-gray-900 text-white p-4 flex justify-between items-center z-50">
+    <nav className="fixed top-0 left-0 h-22 w-full bg-gray-900 text-white p-4 flex justify-between items-center z-50">
       {/* Left Section */}
-      <div className="text-3xl font-bold font-[cursive] pl-5">
+      <div className="text-3xl flex gap-2 font-bold font-[cursive] pl-5">
+        <img src={Logo} className="h-10 w-8" alt="logo" />
         <Link to="/">Talkify</Link>
       </div>
       

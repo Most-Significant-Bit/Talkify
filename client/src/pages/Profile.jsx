@@ -4,7 +4,7 @@ import { AiOutlineLogout } from "react-icons/ai";
 
 import axios from "axios";
 import { CheckCircle2, Loader2 } from "lucide-react";
-import PodcastCard from "../components/PodcastCard"; // assuming you have this component
+import PodcastCard from "../components/PodcastCard";
 import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,13 +16,14 @@ axios.defaults.withCredentials = true;
 const Profile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [user, setUser] = useState(null);
+  const [userEpisodes, setUserEpisodes] = useState([]);
   const navigate = useNavigate();
 
-  const { user: currentUser, checkAuth , logout, isLoading } = useAuthStore();
+  const { user: currentUser, checkAuth, logout, isLoading } = useAuthStore();
 
   const { userId } = useParams();
 
-  const handleFollowToggle = async() => {
+  const handleFollowToggle = async () => {
     await axios.put(`${CLIENT_URL}/user/follow/${user?._id}`);
     setIsFollowing((prev) => !prev);
     await checkAuth();
@@ -35,10 +36,14 @@ const Profile = () => {
 
   const fetchData = async () => {
     try {
-      const response = (await axios.get(`${CLIENT_URL}/user/details/${userId}`)).data
-        .user;
-      console.log(response);
+      const response = (await axios.get(`${CLIENT_URL}/user/details/${userId}`))
+        .data.user;
+      const data = await (
+        await axios.get(`${CLIENT_URL}/episode/userEpisodes/${userId}`)
+      ).data;
+      console.log(data);
       setUser(response);
+      setUserEpisodes(data);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Handle errors here
@@ -90,11 +95,15 @@ const Profile = () => {
               {currentUser?._id !== user?._id ? (
                 <button
                   onClick={handleFollowToggle}
-                  className={`${currentUser?.following_to?.includes(user?._id) ? "bg-blue-700 hover:bg-blue-800 text-white"
-                    : "bg-transparent border-2 border-blue-500  hover:bg-blue-500 text-white "
-                } px-4 py-1 mt-2 cursor-pointer rounded-full text-sm`}
+                  className={`${
+                    currentUser?.following_to?.includes(user?._id)
+                      ? "bg-blue-700 hover:bg-blue-800 text-white"
+                      : "bg-transparent border-2 border-blue-500  hover:bg-blue-500 text-white "
+                  } px-4 py-1 mt-2 cursor-pointer rounded-full text-sm`}
                 >
-                  {currentUser?.following_to?.includes(user?._id) ? "Following" : "Follow"}
+                  {currentUser?.following_to?.includes(user?._id)
+                    ? "Following"
+                    : "Follow"}
                 </button>
               ) : (
                 <></>
@@ -153,8 +162,13 @@ const Profile = () => {
         <div className="pl-6">
           <h2 className="text-2xl font-bold mb-4">My Podcasts</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <PodcastCard />
-            <PodcastCard />
+            {userEpisodes.length > 0 ? (
+              userEpisodes.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
           </div>
         </div>
       </div>

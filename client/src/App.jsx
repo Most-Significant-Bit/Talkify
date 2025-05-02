@@ -10,6 +10,10 @@ import Profile from "./pages/Profile";
 import { useAuthStore } from "./store/authStore";
 import LoadingSpinner from "../src/components/LoadingSpinner";
 import VideoPlayer from "./components/VideoPlayer"
+import Home from "./pages/Home";
+import Favourite from "./pages/Favourite";
+import Update from "./pages/Update";
+
 
 // import { Toaster } from "react-hot-toast";
 
@@ -72,7 +76,7 @@ function App() {
           delay={2}
         />
         <Routes>
-          <Route path="/" element={"Home"} />
+          <Route path="/" element={<Home/>} />
           <Route
             path="/dashboard"
             element={
@@ -101,12 +105,28 @@ function App() {
             }
           />
           <Route path="/upload" element={<Upload />} />
-          <Route path="/podcast/:id" element={<VideoPlayer />} />
+          <Route path="/podcast/:id" element={
+            <ProtectedRoute>
+              <VideoPlayer />
+            </ProtectedRoute>
+            } />
+          <Route path="/update/:id" element={
+            <ProtectedRoute>
+              <Update />
+            </ProtectedRoute>
+            } />
           <Route
             path="/profile/:userId"
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/favourites"
+            element={
+              <ProtectedRoute>
+                <Favourite/>
               </ProtectedRoute>
             }
           />
