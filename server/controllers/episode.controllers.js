@@ -128,13 +128,39 @@ export const updateEpisode = async (req, res) => {
   }
 };
 
+// export const deleteEpisode = async (req, res) => {
+//   try {
+//     const episodeId = req.params.id;
+//     const userId = req.userId;
+
+//     console.log(episodeId);
+  
+//     if (!episodeId) {
+//       return res.status(400).json({ message: "Episode ID is required" });
+//     }
+
+//     const episode = await Episode.findById(episodeId);
+//     if (!episode) {
+//       return res.status(404).json({ message: "Episode not found" });
+//     }
+
+//     if (episode.createdBy == userId) {
+//       const deletedEpisode = await Episode.findByIdAndDelete(episodeId);
+
+//       res.json({ message: "Episode deleted" });
+//     } else {
+//       res.status(403).json({ message: "Unauthorized" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// }
+
 export const deleteEpisode = async (req, res) => {
   try {
     const episodeId = req.params.id;
     const userId = req.userId;
 
-    console.log(episodeId);
-  
     if (!episodeId) {
       return res.status(400).json({ message: "Episode ID is required" });
     }
@@ -144,17 +170,34 @@ export const deleteEpisode = async (req, res) => {
       return res.status(404).json({ message: "Episode not found" });
     }
 
-    if (episode.createdBy == userId) {
-      const deletedEpisode = await Episode.findByIdAndDelete(episodeId);
-
-      res.json({ message: "Episode deleted" });
-    } else {
-      res.status(403).json({ message: "Unauthorized" });
+    if (episode.createdBy.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized" });
     }
+
+    // Delete the episode
+    await Episode.findByIdAndDelete(episodeId);
+
+    // Remove episode reference from the user's episodes_by_user
+    await User.findByIdAndUpdate(userId, {
+      $pull: { episodes_by_user: episodeId }
+    });
+
+    // Remove episode from all users' favorites
+    await User.updateMany(
+      { favorites: episodeId },
+      { $pull: { favorites: episodeId } }
+    );
+
+    res.status(200).json({ message: "Episode deleted successfully" });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
-}
+};
+
+
+
+
 
 export const getUserEpisodes = async (req,res) =>{
     try{
@@ -215,7 +258,13 @@ export const searchEpisodesByCategory = async (req, res) => {
     }
 
     try {
-        const episodes = await Episode.find({ category: { $regex: new RegExp(category, "i") } });
+        const episodes = await Episode.aggregate([
+          {
+            $match: {
+              category: { $regex: new RegExp(`^${category}$`, 'i') }
+            }
+          }
+        ])
 
         if (episodes.length === 0) {
             return res.status(404).json({ message: "No episodes found for the given category." });
