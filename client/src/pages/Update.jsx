@@ -4,6 +4,7 @@ import { Loader, Upload } from "lucide-react";
 
 import { useEpisodeStore } from "../store/episodeStore";
 import { useNavigate, useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 
 export default function UploadForm() {
@@ -36,6 +37,17 @@ export default function UploadForm() {
     console.log("Form Submitted:", formData);
     try {
       await update(id, formData.title, formData.thumbnail, formData.description, formData.video, formData.category,formData.tags);
+      toast.success("Episode Updated!!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
       navigate('/dashboard');
     } catch (error) {
       console.log(error);

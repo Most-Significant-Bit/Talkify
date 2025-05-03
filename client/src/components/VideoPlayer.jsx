@@ -3,17 +3,15 @@ import React, { useEffect, useRef, useState } from "react";
 import Navbar from "./Navbar";
 import { PauseIcon, PlayIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { CgMiniPlayer } from "react-icons/cg";
-import {
-  RiFullscreenExitLine,
-  RiFullscreenFill,
-} from "react-icons/ri";
-import { FcLike ,FcLikePlaceholder } from "react-icons/fc";
+import { RiFullscreenExitLine, RiFullscreenFill } from "react-icons/ri";
+import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { AiOutlineDelete } from "react-icons/ai";
 import { CiSaveDown2 } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
 import { useEpisodeStore } from "../store/episodeStore";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { Bounce, toast } from "react-toastify";
 
 import axios from "axios";
 
@@ -35,9 +33,12 @@ const CustomVideoPlayer = () => {
 
   const { id } = useParams();
 
-  const { getEpisode, episode } = useEpisodeStore();
+  const { getEpisode, episode, deleteEpisode } = useEpisodeStore();
   // console.log(id);
   const { user: currentUser, checkAuth } = useAuthStore();
+
+
+  const navigate = useNavigate();
 
   const handleLikeChange = async () => {
     await axios.put(`${CLIENT_URL}/episode/favorite/${id}`);
@@ -136,6 +137,22 @@ const CustomVideoPlayer = () => {
     }
   };
 
+  const handleDelete = async() => {
+    await deleteEpisode(id);
+    toast.success("Episode Deleted Successfully!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      transition: Bounce,
+    });
+    navigate('/dashboard');
+  };
+
   return (
     <div className="w-full h-200 mt-30 max-w-3xl mx-auto">
       <Navbar />
@@ -194,7 +211,10 @@ const CustomVideoPlayer = () => {
               <button onClick={toggleMiniPlayer} className="text-white">
                 <CgMiniPlayer className="w-6 h-6" />
               </button>
-              <button onClick={toggleFullscreen} className="text-lg cursor-pointer">
+              <button
+                onClick={toggleFullscreen}
+                className="text-lg cursor-pointer"
+              >
                 {isFullscreen === false ? (
                   <RiFullscreenFill className="w-6 h-6" />
                 ) : (
@@ -280,7 +300,10 @@ const CustomVideoPlayer = () => {
             )}
 
             {currentUser?._id === episode?.createdBy?._id ? (
-              <button className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm">
+              <button
+                onClick={handleDelete}
+                className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm"
+              >
                 <AiOutlineDelete className="w-8 h-8" />
               </button>
             ) : (

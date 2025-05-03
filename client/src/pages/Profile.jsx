@@ -9,6 +9,8 @@ import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { getFirstName } from "../utils/info"
+
 const CLIENT_URL = "http://localhost:5000/api";
 
 axios.defaults.withCredentials = true;
@@ -160,7 +162,7 @@ const Profile = () => {
 
         {/* My Podcasts Section */}
         <div className="pl-6">
-          <h2 className="text-2xl font-bold mb-4">My Podcasts</h2>
+          <h2 className="text-2xl font-bold mb-4">{(currentUser?._id !== user?._id) ? `${getFirstName(user?.name)}'s` : "My" } Podcasts</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {userEpisodes.length > 0 ? (
               userEpisodes.map((item, index) => {
