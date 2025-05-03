@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     following: {type: Number,default: 0},
     followed_by: [{type: mongoose.Schema.Types.ObjectId,ref:"User"}],
     following_to: [{type: mongoose.Schema.Types.ObjectId,ref:"User"}],
+    avatar: {type: String, default: ''},
     verificationToken  : String,
     verificationTokenExpiresAt : Date
 
