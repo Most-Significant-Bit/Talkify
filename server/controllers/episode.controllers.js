@@ -209,43 +209,96 @@ export const getUserEpisodes = async (req,res) =>{
     }
 }
 
+// export const favoriteEpisode = async (req, res) => {
+//   try {
+//     const user = req.userId;
+//     const episode = await Episode.findById(req.params.id);
+
+//     if (!episode) {
+//       return res.status(404).json({ error: 'Episode not found' });
+//     }
+
+//     const userIdStr = user.toString();
+//     const alreadyFavorited = episode.favorite_by.some(u => u.toString() === userIdStr);
+
+//     if (alreadyFavorited) {
+//       // Remove user from favorite_by and decrement favorites
+//       episode.favorite_by = episode.favorite_by.filter(u => u.toString() !== userIdStr);
+//       episode.favorites = Math.max(0, episode.favorites - 1); // prevent negative count
+//       await episode.save();
+
+//       return res.status(200).json({
+//         message: 'Disliked'
+//       });
+//     }
+
+//     // Add episode to user's favorites
+//     user.favorites.push(episode. _id);
+
+//     // Add user to favorite_by and increment favorites
+//     episode.favorite_by.push(user);
+//     episode.favorites += 1;
+//     await episode.save();
+
+//     res.status(200).json({
+//       message: 'Liked'
+//     });
+
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       message: error.message
+//     });
+//   }
+// };
+
 export const favoriteEpisode = async (req, res) => {
   try {
-    const user = req.userId;
-    const episode = await Episode.findById(req.params.id);
+    const userId = req.userId;
+    const episodeId = req.params.id;
+
+    const episode = await Episode.findById(episodeId);
+    const user = await User.findById(userId);
 
     if (!episode) {
       return res.status(404).json({ error: 'Episode not found' });
     }
 
-    const userIdStr = user.toString();
-    const alreadyFavorited = episode.favorite_by.some(u => u.toString() === userIdStr);
-
-    if (alreadyFavorited) {
-      // Remove user from favorite_by and decrement favorites
-      episode.favorite_by = episode.favorite_by.filter(u => u.toString() !== userIdStr);
-      episode.favorites = Math.max(0, episode.favorites - 1); // prevent negative count
-      await episode.save();
-
-      return res.status(200).json({
-        message: 'Disliked'
-      });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    // Add user to favorite_by and increment favorites
-    episode.favorite_by.push(user);
-    episode.favorites += 1;
-    await episode.save();
+    const alreadyFavorited = user.favorites.some(
+      fav => fav.toString() === episodeId
+    );
 
-    res.status(200).json({
-      message: 'Liked'
-    });
+    if (alreadyFavorited) {
+      // Unlike: Remove episode from user's favorites and user from episode's favorite_by
+      user.favorites = user.favorites.filter(
+        fav => fav.toString() !== episodeId
+      );
+      episode.favorite_by = episode.favorite_by.filter(
+        uid => uid.toString() !== userId
+      );
+      episode.favorites = Math.max(0, episode.favorites - 1);
+
+      await Promise.all([user.save(), episode.save()]);
+
+      return res.status(200).json({ message: 'Disliked' });
+    }
+
+    // Like: Add episode to user's favorites and user to episode's favorite_by
+    user.favorites.push(episodeId);
+    episode.favorite_by.push(userId);
+    episode.favorites += 1;
+
+    await Promise.all([user.save(), episode.save()]);
+
+    res.status(200).json({ message: 'Liked' });
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({
-      message: error.message
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
