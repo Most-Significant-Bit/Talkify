@@ -9,11 +9,11 @@ import LogIn from "./pages/LogIn";
 import Profile from "./pages/Profile";
 import { useAuthStore } from "./store/authStore";
 import LoadingSpinner from "../src/components/LoadingSpinner";
-import VideoPlayer from "./components/VideoPlayer"
+import VideoPlayer from "./components/VideoPlayer";
 import Home from "./pages/Home";
 import Favourite from "./pages/Favourite";
 import Update from "./pages/Update";
-
+import { Bounce, ToastContainer } from "react-toastify";
 
 // import { Toaster } from "react-hot-toast";
 
@@ -39,14 +39,13 @@ const RedirectAuthenticatedUser = ({ children }) => {
 };
 
 function App() {
-
   const { isCheckingAuth, checkAuth } = useAuthStore();
 
   useEffect(() => {
-      checkAuth();      
-    }, [checkAuth]);
-  
-    if(isCheckingAuth) return <LoadingSpinner/>
+    checkAuth();
+  }, [checkAuth]);
+
+  if (isCheckingAuth) return <LoadingSpinner />;
 
   return (
     <>
@@ -76,7 +75,7 @@ function App() {
           delay={2}
         />
         <Routes>
-          <Route path="/" element={<Home/>} />
+          <Route path="/" element={<Home />} />
           <Route
             path="/dashboard"
             element={
@@ -105,16 +104,22 @@ function App() {
             }
           />
           <Route path="/upload" element={<Upload />} />
-          <Route path="/podcast/:id" element={
-            <ProtectedRoute>
-              <VideoPlayer />
-            </ProtectedRoute>
-            } />
-          <Route path="/update/:id" element={
-            <ProtectedRoute>
-              <Update />
-            </ProtectedRoute>
-            } />
+          <Route
+            path="/podcast/:id"
+            element={
+              <ProtectedRoute>
+                <VideoPlayer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/update/:id"
+            element={
+              <ProtectedRoute>
+                <Update />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/profile/:userId"
             element={
@@ -123,15 +128,29 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/favourites"
+          <Route
+            path="/favourites"
             element={
               <ProtectedRoute>
-                <Favourite/>
+                <Favourite />
               </ProtectedRoute>
             }
           />
         </Routes>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
     </>
   );
 }

@@ -109,4 +109,20 @@ export const useEpisodeStore = create((set) => ({
       throw error;
     }
   },
+
+  deleteEpisode : async (id) => {
+    set({ isLoading: true, error: null });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await axios.delete(`${CLIENT_URL}/delete/${id}`);
+      set({ isLoading : false, error : null});
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || "Error in deleting Episode",
+        isLoading: false,
+      });
+      throw error;
+    }
+  }
+
 }));

@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { useAuthStore } from "../store/authStore";
 
+import { toast , Bounce} from "react-toastify"
+
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,6 +20,17 @@ const SignUpPage = () => {
     e.preventDefault();
     try {
       await signup(email, password, name);
+      toast.success("Account created Successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
       navigate("/dashboard");
     } catch (error) {
       console.log(error);

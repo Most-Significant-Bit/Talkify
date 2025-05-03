@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Loader, Upload } from "lucide-react";
+import { Bounce, toast } from "react-toastify"
 
 import { useEpisodeStore } from "../store/episodeStore";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,17 @@ export default function UploadForm() {
     console.log("Form Submitted:", formData);
     try {
       await create(formData.title, formData.thumbnail, formData.description, formData.video, formData.category,formData.tags);
+      toast.success("Episode Created Successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
       navigate('/dashboard');
     } catch (error) {
       console.log(error);
