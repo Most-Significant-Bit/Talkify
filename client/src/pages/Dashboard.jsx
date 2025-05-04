@@ -75,17 +75,48 @@ const Podcasts = styled.div`
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
+  const [comedy, setComedy] = useState([]);
+  const [motivational, setMotivational] = useState([]);
+  const [love, setLove] = useState([]);
+  const [horror, setHorror] = useState([]);
+  const [crime, setCrime] = useState([]);
+
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${CLIENT_URL}/getAll`);
-      // console.log(response.data);
-      setData(response.data.reverse());
+      const allResponse = await axios.get(`${CLIENT_URL}/getAll`);
+      
+      // Sort by favorites (highest to lowest), then take top 7
+      const sortedData = allResponse.data
+        .sort((a, b) => b.favorites - a.favorites)
+        .slice(0, 7);
+    
+      setData(sortedData);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      // Handle errors here
+      console.error("Error fetching all data:", error);
     }
+    
+  
+    const categorySetters = {
+      love: setLove,
+      motivational: setMotivational,
+      horror: setHorror,
+      comedy: setComedy,
+      crime : setCrime
+    };
+  
+    const categoryPromises = Object.keys(categorySetters).map(async (category) => {
+      try {
+        const res = await axios.get(`${CLIENT_URL}/search/?category=${category}`);
+        categorySetters[category](res.data);
+      } catch (err) {
+        console.error(`Error fetching ${category}:`, err);
+      }
+    });
+  
+    await Promise.all(categoryPromises);
   };
+  
 
   // useEffect to fetch once on mount
   useEffect(() => {
@@ -118,20 +149,92 @@ const Dashboard = () => {
           </Podcasts>
         </Container>
 
+
         <Container>
           <Topic>
-            Comedy
-            <Link
-              to={`/showpodcasts/comedy`}
-              style={{ textDecoration: "none" }}
-            >
+            Love
+            <Link to={`/showpodcasts/love`} style={{ textDecoration: "none" }}>
               <Span>Show All</Span>
             </Link>
           </Topic>
           <Podcasts>
-            <PodcastCard />
-            <PodcastCard />
-            <PodcastCard />
+            {love.length > 0 ? (
+              love.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+        <Container>
+          <Topic>
+            Horror
+            <Link to={`/showpodcasts/horror`} style={{ textDecoration: "none" }}>
+              <Span>Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {horror.length > 0 ? (
+              horror.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+
+
+        <Container>
+          <Topic>
+            Comedy
+            <Link to={`/showpodcasts/love`} style={{ textDecoration: "none" }}>
+              <Span>Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {comedy.length > 0 ? (
+              comedy.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+        <Container>
+          <Topic>
+            Motivational
+            <Link to={`/showpodcasts/love`} style={{ textDecoration: "none" }}>
+              <Span>Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {motivational.length > 0 ? (
+              motivational.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+        <Container>
+          <Topic>
+            Crime
+            <Link to={`/showpodcasts/crime`} style={{ textDecoration: "none" }}>
+              <Span>Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {crime.length > 0 ? (
+              crime.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
           </Podcasts>
         </Container>
       </DashboardMain>

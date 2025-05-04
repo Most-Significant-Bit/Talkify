@@ -24,7 +24,7 @@ function Navbar() {
       <ul className="flex space-x-6">
         <li><Link to="/dashboard" className="hover:text-gray-400">Home</Link></li>
         <li><Link to="/search" className="hover:text-gray-400">Search</Link></li>
-        <li><Link to="/favourites" className="hover:text-gray-400">Favourites</Link></li>
+        <li><Link to={`/favorites/${user._id}`} className="hover:text-gray-400">Favourites</Link></li>
         <li><Link to="/about" className="hover:text-gray-400">About</Link></li>
       </ul>
       

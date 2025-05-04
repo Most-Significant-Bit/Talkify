@@ -238,11 +238,12 @@ const CustomVideoPlayer = () => {
 
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center gap-4">
-            <img
+            <a href={`/profile/${episode?.createdBy?._id}`}><img
               className="w-13 h-13 cursor-pointer border-2 border-green-500 rounded-full"
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqkUYrITWyI8OhPNDHoCDUjGjhg8w10_HRqg&s"
               alt=""
-            />
+            /></a>
+            
             <div className="flex flex-col gap-x-0.5">
               <a
                 href={`/profile/${episode?.createdBy?._id}`}

@@ -132,34 +132,10 @@ export default function UploadForm() {
               <option value="horror">Horror</option>
               <option value="motivational">Motivational</option>
               <option value="love">Love</option>
+              <option value="crime">crime</option>
+              <option value="history">History</option>
+              <option value="Educational">Educational</option>
             </select>
-
-            {/* Episode Upload */}
-            <div className="border-2 border-gray-700 py-10 px-10 text-center rounded">
-              <input
-                type="file"
-                name="video"
-                accept="audio/*,video/*"
-                onChange={handleFileChange}
-                className="hidden w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-white placeholder-gray-400 transition duration-200"
-                id="episode-upload"
-              />
-              <Upload
-                style={{
-                  marginLeft: "180px",
-                  color: "green",
-                  marginBottom: "10px",
-                }}
-              />
-              <label
-                htmlFor="episode-upload"
-                className="cursor-pointer text-gray-400"
-              >
-                {formData.video == null
-                  ? "Update Video"
-                  : formData.video?.name}
-              </label>
-            </div>
 
             {/* Tags */}
             <textarea

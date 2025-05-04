@@ -129,7 +129,7 @@ function App() {
             }
           />
           <Route
-            path="/favourites"
+            path="/favorites/:userId"
             element={
               <ProtectedRoute>
                 <Favourite />

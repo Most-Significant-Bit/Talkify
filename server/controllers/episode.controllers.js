@@ -304,28 +304,25 @@ export const favoriteEpisode = async (req, res) => {
 
 
 export const searchEpisodesByCategory = async (req, res) => {
-    const category  = req.query.category;
+  const category = req.query.category;
 
-    if (!category) {
-        return res.status(400).json({ error: "Category is required in query parameters." });
+  if (!category) {
+    return res.status(400).json({ error: "Category is required in query parameters." });
+  }
+
+  try {
+    const episodes = await Episode.find({
+      category: { $regex: new RegExp(`^${category}$`, 'i') }
+    }).populate("createdBy"); // Automatically joins user data
+
+    if (episodes.length === 0) {
+      return res.status(404).json({ message: "No episodes found for the given category." });
     }
 
-    try {
-        const episodes = await Episode.aggregate([
-          {
-            $match: {
-              category: { $regex: new RegExp(`^${category}$`, 'i') }
-            }
-          }
-        ])
-
-        if (episodes.length === 0) {
-            return res.status(404).json({ message: "No episodes found for the given category." });
-        }
-
-        res.status(200).json(episodes);
-    } catch (error) {
-        console.error("Error searching episodes by category:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+    res.status(200).json(episodes);
+  } catch (error) {
+    console.error("Error searching episodes by category:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
+

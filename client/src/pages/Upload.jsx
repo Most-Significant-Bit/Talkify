@@ -108,11 +108,14 @@ export default function UploadForm() {
               onChange={handleChange}
               className="w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 cursor-pointer focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-400 placeholder-gray-400 transition duration-200"
             >
-              <option value="">Select Category</option>
+             <option value="">Select Category</option>
               <option value="comedy">Comedy</option>
               <option value="horror">Horror</option>
               <option value="motivational">Motivational</option>
               <option value="love">Love</option>
+              <option value="crime">crime</option>
+              <option value="history">History</option>
+              <option value="educational">Educational</option>
             </select>
 
             {/* Episode Upload */}

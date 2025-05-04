@@ -8,8 +8,9 @@ import PodcastCard from "../components/PodcastCard";
 import Navbar from "../components/Navbar";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate, useParams } from "react-router-dom";
+import { MdVerified } from "react-icons/md";
 
-import { getFirstName } from "../utils/info"
+import { getFirstName } from "../utils/info";
 
 const CLIENT_URL = "http://localhost:5000/api";
 
@@ -77,7 +78,7 @@ const Profile = () => {
                 {user?._id === currentUser?._id ? (
                   user?.isVerified ? (
                     <div className="flex items-center gap-1 text-green-400 mt-1">
-                      <CheckCircle2 className="w-5 h-5" /> Verified
+                      <MdVerified className="text-green-500 text-2xl"/>
                     </div>
                   ) : (
                     <button className="bg-transparent border-2 border-green-500 hover:bg-green-500 px-4 py-1 rounded-full cursor-pointer text-white">
@@ -87,7 +88,7 @@ const Profile = () => {
                 ) : (
                   user?.isVerified && (
                     <div className="flex items-center gap-1 text-green-400 mt-1">
-                      <CheckCircle2 className="w-5 h-5" /> Verified
+                      <MdVerified className="text-green-500 text-2xl"/>
                     </div>
                   )
                 )}
@@ -120,7 +121,7 @@ const Profile = () => {
               className="flex items-center gap-2 bg-transparent border-2 border-red-500 hover:bg-red-500 px-4 py-1 rounded-full cursor-pointer text-white"
             >
               Logout{" "}
-              <AiOutlineLogout style={{ color: "red", fontSize: "20px" }} />
+              <AiOutlineLogout/>
             </button>
           ) : (
             <></>
@@ -154,19 +155,32 @@ const Profile = () => {
           <h2 className="text-2xl font-bold mb-4">Favorite Podcasts</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {/* Repeat your PodcastCard component */}
-            <PodcastCard />
-            <PodcastCard />
-            <PodcastCard />
+            {user?.favorites.length > 0 ? (
+              user?.favorites
+                .sort((a, b) => a.favorites - b.favorites) // Sort in ascending order (lowest to highest)
+                .slice(0, 6) // Get only the first 6 elements
+                .map((item, index) => {
+                  console.log(index, item);
+                  return <PodcastCard key={index} data={item} id={item?._id} />;
+                })
+            ) : (
+              <p>No episodes found.</p>
+            )}
           </div>
         </div>
 
         {/* My Podcasts Section */}
         <div className="pl-6">
-          <h2 className="text-2xl font-bold mb-4">{(currentUser?._id !== user?._id) ? `${getFirstName(user?.name)}'s` : "My" } Podcasts</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            {currentUser?._id !== user?._id
+              ? `${getFirstName(user?.name)}'s`
+              : "My"}{" "}
+            Podcasts
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {userEpisodes.length > 0 ? (
               userEpisodes.map((item, index) => {
-                return <PodcastCard key={index} data={item} id={item?._id} />
+                return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (
               <p>No episodes found.</p>

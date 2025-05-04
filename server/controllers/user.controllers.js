@@ -88,18 +88,21 @@ export const followUser = async (req, res) => {
 };
 
 
-export const getDetails = async (req,res)=>{
-    try{
-        const user = await User.findById(req.params.id);
-        if(user);
-        res.status(200).json({
-          user
-        })        
-
-    } catch(error){
-        console.log(error);
-        res.status(500).json({
-          message: error.message
-        })
+export const getDetails = async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id)
+        .populate({
+          path: 'favorites',
+          populate: {
+            path: 'createdBy'
+          }
+        });
+  
+      res.status(200).json({ user });
+  
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error.message });
     }
-}
+  };
+  

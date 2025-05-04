@@ -6,7 +6,7 @@ import { useAuthStore } from "../store/authStore";
 
 const Home = () => {
 
-  const {isAuthenticated} = useAuthStore();
+  const {isAuthenticated, user} = useAuthStore();
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-gradient-to-r from-[#02353C] via-[#2EAF7D] to-[#3FDC09]">
@@ -25,7 +25,7 @@ const Home = () => {
         {/* Center */}
         <div className="hidden md:flex space-x-8 text-white text-lg">
           <a href="/dashboard">Dashboard</a>
-          <a href="/favourites">Favourites</a>
+          <a href={`/favorites/${user?._id}`}>Favourites</a>
           <a href="#">Contact Us</a>
           <a href="#">About</a>
         </div>
