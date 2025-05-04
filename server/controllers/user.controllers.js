@@ -146,7 +146,7 @@ export const updateAvatar = async (req, res) => {
     }
   };
 
-  export const getUserFavorites = async (req, res) => {
+export const getUserFavorites = async (req, res) => {
     try {
         const userId = req.userId; // Or use req.user.id if using auth middleware
 
