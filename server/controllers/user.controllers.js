@@ -1,5 +1,5 @@
 import { User } from "../models/user.model.js";
-
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 // export const followUser = async (req,res) =>{
 //    try
 //         {
@@ -104,5 +104,48 @@ export const getDetails = async (req, res) => {
       console.log(error);
       res.status(500).json({ message: error.message });
     }
+<<<<<<< HEAD
   };
   
+=======
+}
+
+export const updateAvatar = async (req, res) => {
+    try {
+      const userId = req.userId;
+      const localFilePath = req.file?.path;
+  
+      if (!localFilePath) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+  
+      const cloudinaryResponse = await uploadOnCloudinary(localFilePath);
+  
+      if (!cloudinaryResponse) {
+        return res.status(500).json({ error: 'Failed to upload image' });
+      }
+  
+      const avatarUrl = cloudinaryResponse.url;
+  
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { avatar: avatarUrl },
+        { new: true }
+      ).select('-password');
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      res.status(200).json({
+        message: 'Avatar updated successfully',
+        avatar: avatarUrl,
+        user,
+      });
+  
+    } catch (error) {
+      console.error('Error updating avatar:', error);
+      res.status(500).json({ message: error.message });
+    }
+  };
+>>>>>>> f5a0b29906ada57ce5dfd55f57891598bdb8fa08
