@@ -104,11 +104,8 @@ export const getDetails = async (req, res) => {
       console.log(error);
       res.status(500).json({ message: error.message });
     }
-<<<<<<< HEAD
   };
-  
-=======
-}
+
 
 export const updateAvatar = async (req, res) => {
     try {
@@ -148,9 +145,6 @@ export const updateAvatar = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
-<<<<<<< HEAD
->>>>>>> f5a0b29906ada57ce5dfd55f57891598bdb8fa08
-=======
 
   export const getUserFavorites = async (req, res) => {
     try {
@@ -170,4 +164,3 @@ export const updateAvatar = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
->>>>>>> 1667221447524ccbacfddb404910e11e73b3d77d
