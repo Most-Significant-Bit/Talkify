@@ -148,4 +148,26 @@ export const updateAvatar = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+<<<<<<< HEAD
 >>>>>>> f5a0b29906ada57ce5dfd55f57891598bdb8fa08
+=======
+
+  export const getUserFavorites = async (req, res) => {
+    try {
+        const userId = req.userId; // Or use req.user.id if using auth middleware
+
+        const user = await User.findById(userId)
+            .populate('favorites') // populate favorite Episodes
+            .select('favorites'); // only return the favorites field
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ favorites: user.favorites });
+    } catch (error) {
+        console.error('Error fetching favorites:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+>>>>>>> 1667221447524ccbacfddb404910e11e73b3d77d
