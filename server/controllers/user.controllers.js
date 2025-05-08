@@ -164,3 +164,24 @@ export const getUserFavorites = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find()
+      .select('-password -verificationToken -verificationTokenExpiresAt') // omit sensitive fields
+      .populate('favorites', 'title') // populate favorite episodes, fetching only the 'title'
+      .populate('episodes_by_user', 'title'); // populate user's own episodes
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching users.',
+    });
+  }
+};
