@@ -25,7 +25,7 @@ const Home = () => {
         {/* Center */}
         <div className="hidden md:flex space-x-8 text-white text-lg">
           <a href="/dashboard">Dashboard</a>
-          <a href={`/favorites/${user?._id}`}>Favourites</a>
+          <a href="/favorites">Favourites</a>
           <a href="#">Contact Us</a>
           <a href="#">About</a>
         </div>

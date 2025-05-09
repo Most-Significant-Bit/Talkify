@@ -13,6 +13,7 @@ import VideoPlayer from "./components/VideoPlayer";
 import Home from "./pages/Home";
 import Favourite from "./pages/Favourite";
 import Update from "./pages/Update";
+import AllUsers from "./pages/AllUsers";
 import { Bounce, ToastContainer } from "react-toastify";
 
 // import { Toaster } from "react-hot-toast";
@@ -129,10 +130,18 @@ function App() {
             }
           />
           <Route
-            path="/favorites/:userId"
+            path="/favorites"
             element={
               <ProtectedRoute>
                 <Favourite />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/allUsers"
+            element={
+              <ProtectedRoute>
+                <AllUsers/>
               </ProtectedRoute>
             }
           />

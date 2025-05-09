@@ -1,69 +1,61 @@
-import React from 'react';
-import styled from 'styled-components';
-import PodcastCard from "../components/PodcastCard"
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar"; // Adjust path as needed
+import PodcastCard from "../components/PodcastCard"; // Adjust path as needed
 
+import axios from "axios";
 
+const CLIENT_URL = "http://localhost:5000/api/user";
 
-const Container = styled.div`
-padding: 20px 30px;
-padding-bottom: 200px;
-height: 100%;
-display: flex;
-flex-direction: column;
-gap: 20px;
-`
-const Topic = styled.div`
-  color: ${({ theme }) => theme.text_primary};
-  font-size: 24px;
-  font-weight: 540;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
+axios.defaults.withCredentials = true;
 
-const FavouritesContainer = styled.div`
-display: flex;
-flex-wrap: wrap;
-gap: 14px;
-padding: 18px 6px;
-@media (max-width: 550px){
-  justify-content: center;
-}
-`
+const MyFavorites = () => {
+  const [data, setData] = useState([]);
 
-const Loader = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100%;
-width: 100%;
-`
+  const fetchData = async () => {
+    try {
+      const res = (await axios.get(`${CLIENT_URL}/showFavorites`)).data.favorites;
+      console.log(res);
+      setData(res);
+    } catch (error) {
+      console.error("Error fetching all data:", error);
+    }
+  };
 
-const DisplayNo = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100%;
-width: 100%;
-color: ${({ theme }) => theme.text_primary};
-`
+  useEffect(() => {
+    fetchData();
+  }, []);
+  return (
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-transparent pt-25 text-white">
+        {/* Navbar at the top */}
 
+        {/* Title */}
+        <div className="px-6 py-4">
+          <h1 className="text-3xl font-bold">My Favorites</h1>
+        </div>
 
-const Favourites = () => {
-   return (
-    <Container>
-      <Topic>
-        Favourites
-      </Topic>
-      
+        {/* Podcast list */}
+        <div className="px-6 pb-8 pt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {data?.length > 0 ? (
+            data?.map((item, index) => {
+              // console.log("DATA ITEM:", index, item); // 👈 see what's inside!
+              return <PodcastCard key={index} data={item} id={item?._id} />;
+            })
+          ) : (
+            <p>No episodes found.</p>
+          )}
+          {/* {favorites && favorites.length > 0 ? (
+          favorites.map((podcast, index) => (
+            <PodcastCard key={index} podcast={podcast} />
+          ))
+        ) : (
+          <p className="text-gray-400 text-center col-span-full">No favorite podcasts yet.</p>
+        )} */}
+        </div>
+      </div>
+    </>
+  );
+};
 
-      <FavouritesContainer>
-        <PodcastCard/>
-        <PodcastCard/>
-        <PodcastCard/>
-      </FavouritesContainer>
-    </Container>
-  )
-}
-
-export default Favourites
+export default MyFavorites;

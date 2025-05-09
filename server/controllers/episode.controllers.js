@@ -315,10 +315,6 @@ export const searchEpisodesByCategory = async (req, res) => {
       category: { $regex: new RegExp(`^${category}$`, 'i') }
     }).populate("createdBy"); // Automatically joins user data
 
-    if (episodes.length === 0) {
-      return res.status(404).json({ message: "No episodes found for the given category." });
-    }
-
     res.status(200).json(episodes);
   } catch (error) {
     console.error("Error searching episodes by category:", error);

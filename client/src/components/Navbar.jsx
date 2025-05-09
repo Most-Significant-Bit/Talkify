@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Logo from "../images/Logo1.png"
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { NavLink } from 'react-router-dom';
+
 
 
 
@@ -22,10 +24,60 @@ function Navbar() {
       
       {/* Middle Section */}
       <ul className="flex space-x-6">
-        <li><Link to="/dashboard" className="hover:text-gray-400">Home</Link></li>
-        <li><Link to="/search" className="hover:text-gray-400">Search</Link></li>
-        <li><Link to={`/favorites/${user._id}`} className="hover:text-gray-400">Favourites</Link></li>
-        <li><Link to="/about" className="hover:text-gray-400">About</Link></li>
+      <NavLink
+  to="/dashboard"
+  className={({ isActive }) =>
+    isActive
+      ? "text-green-400 font-semibold"
+      : "text-white hover:text-green-300 transition"
+  }
+>
+  Home
+</NavLink>
+
+<NavLink
+  to="/favorites"
+  className={({ isActive }) =>
+    isActive
+      ? "text-green-400 font-semibold"
+      : "text-white hover:text-green-300 transition"
+  }
+>
+  Favourites
+</NavLink>
+<NavLink
+  to="/search"
+  className={({ isActive }) =>
+    isActive
+      ? "text-green-400 font-semibold"
+      : "text-white hover:text-green-300 transition"
+  }
+>
+  Search
+</NavLink>
+
+<NavLink
+  to="/contact"
+  className={({ isActive }) =>
+    isActive
+      ? "text-green-400 font-semibold"
+      : "text-white hover:text-green-300 transition"
+  }
+>
+  Contact Us
+</NavLink>
+
+<NavLink
+  to="/allUsers"
+  className={({ isActive }) =>
+    isActive
+      ? "text-green-400 font-semibold"
+      : "text-white hover:text-green-300 transition"
+  }
+>
+  Users
+</NavLink>
+
       </ul>
       
       {/* Right Section */}

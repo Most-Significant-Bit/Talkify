@@ -4,7 +4,6 @@ import styled from "styled-components";
 import PodcastCard from "../components/PodcastCard";
 import Navbar from "../components/Navbar";
 
-import { useEpisodeStore } from "../store/episodeStore";
 import axios from "axios";
 
 const CLIENT_URL = "http://localhost:5000/api/episode";
@@ -110,9 +109,15 @@ const Dashboard = () => {
         const res = await axios.get(`${CLIENT_URL}/search/?category=${category}`);
         categorySetters[category](res.data);
       } catch (err) {
-        console.error(`Error fetching ${category}:`, err);
+        if (err.response && err.response.status === 404) {
+          // No data found for this category — that's okay, just set empty
+          categorySetters[category]([]);
+        } else {
+          console.error(`Unexpected error fetching ${category}:`, err);
+        }
       }
     });
+    
   
     await Promise.all(categoryPromises);
   };
@@ -138,8 +143,8 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            {data.length > 0 ? (
-              data.map((item, index) => {
+            {data?.length > 0 ? (
+              data?.map((item, index) => {
                 // console.log("DATA ITEM:", index, item); // 👈 see what's inside!
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
@@ -158,8 +163,8 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            {love.length > 0 ? (
-              love.map((item, index) => {
+            {love?.length > 0 ? (
+              love?.map((item, index) => {
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (
@@ -175,8 +180,8 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            {horror.length > 0 ? (
-              horror.map((item, index) => {
+            {horror?.length > 0 ? (
+              horror?.map((item, index) => {
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (
@@ -194,8 +199,8 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            {comedy.length > 0 ? (
-              comedy.map((item, index) => {
+            {comedy?.length > 0 ? (
+              comedy?.map((item, index) => {
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (
@@ -211,8 +216,8 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            {motivational.length > 0 ? (
-              motivational.map((item, index) => {
+            {motivational?.length > 0 ? (
+              motivational?.map((item, index) => {
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (
@@ -228,8 +233,8 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            {crime.length > 0 ? (
-              crime.map((item, index) => {
+            {crime?.length > 0 ? (
+              crime?.map((item, index) => {
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (

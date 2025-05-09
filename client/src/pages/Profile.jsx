@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { Bounce, toast } from "react-toastify";
 
 import { AiOutlineLogout } from "react-icons/ai";
 
 import axios from "axios";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import LoadingSpinner from "../components/LoadingSpinner";
 import PodcastCard from "../components/PodcastCard";
 import Navbar from "../components/Navbar";
+import { MdOutlineModeEdit } from "react-icons/md";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate, useParams } from "react-router-dom";
+
 import { MdVerified } from "react-icons/md";
 
 import { getFirstName } from "../utils/info";
@@ -21,6 +24,8 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [userEpisodes, setUserEpisodes] = useState([]);
   const navigate = useNavigate();
+
+  const fileInputRef = React.useRef(null);
 
   const { user: currentUser, checkAuth, logout, isLoading } = useAuthStore();
 
@@ -44,7 +49,6 @@ const Profile = () => {
       const data = await (
         await axios.get(`${CLIENT_URL}/episode/userEpisodes/${userId}`)
       ).data;
-      console.log(data);
       setUser(response);
       setUserEpisodes(data);
     } catch (error) {
@@ -57,8 +61,59 @@ const Profile = () => {
     fetchData();
   }, [userId, isFollowing]);
 
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      const res = await toast.promise(
+        axios.put(
+          `${CLIENT_URL}/user/update/avatar/${currentUser?._id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        ),
+        {
+          pending: "Uploading Profile Picture...",
+          success: {
+            render({ data }) {
+              // Update the avatar after successful upload
+              setUser((prev) => ({ ...prev, avatar: data.data.avatar }));
+              return "Profile Picture Updated!!";
+            },
+          },
+          error: {
+            render({ data }) {
+              console.error("Error uploading image", data);
+              return "Error uploading profile picture";
+            },
+          },
+        },
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        }
+      );
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    }
+  };
+
   return isLoading ? (
-    <Loader2 />
+    <LoadingSpinner />
   ) : (
     <>
       <Navbar />
@@ -67,18 +122,43 @@ const Profile = () => {
         <div className="flex justify-between items-center p-10 mb-4">
           {/* Avatar */}
           <div className="flex items-center gap-4">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNiF96dKTOvN0Ai2EJU-EPXQl6vTQCXB209g&s" // Replace with dynamic image if needed
-              alt="Profile"
-              className="w-24 h-24 rounded-full border-4 border-green-500"
-            />
+            <div
+              className="relative group w-24 h-24"
+              onClick={() => {
+                if (currentUser?._id === user?._id) {
+                  fileInputRef.current.click();
+                }
+              }}
+            >
+              <img
+                src={
+                  user?.avatar ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNiF96dKTOvN0Ai2EJU-EPXQl6vTQCXB209g&s"
+                }
+                alt="Profile"
+                className="w-full h-full rounded-full border-4 object-cover border-green-500 cursor-pointer"
+              />
+              {currentUser?._id === user?._id && (
+                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 hover:cursor-grab transition">
+                  <MdOutlineModeEdit />
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </div>
+
             <div className="flex flex-col items-start">
               <div className="flex items-center">
                 <h1 className="text-3xl font-bold mr-4">{user?.name}</h1>
                 {user?._id === currentUser?._id ? (
                   user?.isVerified ? (
                     <div className="flex items-center gap-1 text-green-400 mt-1">
-                      <MdVerified className="text-green-500 text-2xl"/>
+                      <MdVerified className="text-green-500 text-2xl" />
                     </div>
                   ) : (
                     <button className="bg-transparent border-2 border-green-500 hover:bg-green-500 px-4 py-1 rounded-full cursor-pointer text-white">
@@ -88,7 +168,7 @@ const Profile = () => {
                 ) : (
                   user?.isVerified && (
                     <div className="flex items-center gap-1 text-green-400 mt-1">
-                      <MdVerified className="text-green-500 text-2xl"/>
+                      <MdVerified className="text-green-500 text-2xl" />
                     </div>
                   )
                 )}
@@ -120,8 +200,7 @@ const Profile = () => {
               onClick={handleLogout}
               className="flex items-center gap-2 bg-transparent border-2 border-red-500 hover:bg-red-500 px-4 py-1 rounded-full cursor-pointer text-white"
             >
-              Logout{" "}
-              <AiOutlineLogout/>
+              Logout <AiOutlineLogout />
             </button>
           ) : (
             <></>
