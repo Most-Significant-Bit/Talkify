@@ -39,7 +39,7 @@ background-color: ${theme.bg};
 `;
 const Topic = styled.div`
   color: white;
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 540;
   display: flex;
   justify-content: space-between;
@@ -139,7 +139,7 @@ const Dashboard = () => {
               to={`/showpodcasts/mostpopular`}
               style={{ textDecoration: "none" }}
             >
-              <Span>Show All</Span>
+              <Span className="px-4 py-3 rounded-2xl bg-transparent border-2 border-green-500">Show All</Span>
             </Link>
           </Topic>
           <Podcasts>
@@ -159,7 +159,7 @@ const Dashboard = () => {
           <Topic>
             Love
             <Link to={`/showpodcasts/love`} style={{ textDecoration: "none" }}>
-              <Span>Show All</Span>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
             </Link>
           </Topic>
           <Podcasts>
@@ -176,7 +176,7 @@ const Dashboard = () => {
           <Topic>
             Horror
             <Link to={`/showpodcasts/horror`} style={{ textDecoration: "none" }}>
-              <Span>Show All</Span>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
             </Link>
           </Topic>
           <Podcasts>
@@ -194,8 +194,8 @@ const Dashboard = () => {
         <Container>
           <Topic>
             Comedy
-            <Link to={`/showpodcasts/love`} style={{ textDecoration: "none" }}>
-              <Span>Show All</Span>
+            <Link to={`/showpodcasts/comedy`} style={{ textDecoration: "none" }}>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
             </Link>
           </Topic>
           <Podcasts>
@@ -211,8 +211,8 @@ const Dashboard = () => {
         <Container>
           <Topic>
             Motivational
-            <Link to={`/showpodcasts/love`} style={{ textDecoration: "none" }}>
-              <Span>Show All</Span>
+            <Link to={`/showpodcasts/motivational`} style={{ textDecoration: "none" }}>
+             <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
             </Link>
           </Topic>
           <Podcasts>
@@ -227,9 +227,43 @@ const Dashboard = () => {
         </Container>
         <Container>
           <Topic>
+            History
+            <Link to={`/showpodcasts/history`} style={{ textDecoration: "none" }}>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-300">Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {crime?.length > 0 ? (
+              crime?.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+        <Container>
+          <Topic>
             Crime
             <Link to={`/showpodcasts/crime`} style={{ textDecoration: "none" }}>
-              <Span>Show All</Span>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {crime?.length > 0 ? (
+              crime?.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+        <Container>
+          <Topic>
+            Educational
+            <Link to={`/showpodcasts/educational`} style={{ textDecoration: "none" }}>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
             </Link>
           </Topic>
           <Podcasts>

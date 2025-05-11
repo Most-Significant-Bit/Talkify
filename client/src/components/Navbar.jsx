@@ -57,7 +57,7 @@ function Navbar() {
 </NavLink>
 
 <NavLink
-  to="/contact"
+  to="/contactus"
   className={({ isActive }) =>
     isActive
       ? "text-green-400 font-semibold"

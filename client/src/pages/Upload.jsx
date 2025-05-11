@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader, Upload } from "lucide-react";
-import { Bounce, toast } from "react-toastify"
+import { Bounce, toast } from "react-toastify";
 
 import { useEpisodeStore } from "../store/episodeStore";
 import { useNavigate } from "react-router-dom";
@@ -17,8 +17,13 @@ export default function UploadForm() {
   });
 
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const { isLoading, create, error } = useEpisodeStore();
+
+  const handleDivClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +39,14 @@ export default function UploadForm() {
     e.preventDefault();
     console.log("Form Submitted:", formData);
     try {
-      await create(formData.title, formData.thumbnail, formData.description, formData.video, formData.category,formData.tags);
+      await create(
+        formData.title,
+        formData.thumbnail,
+        formData.description,
+        formData.video,
+        formData.category,
+        formData.tags
+      );
       toast.success("Episode Created Successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -46,7 +58,7 @@ export default function UploadForm() {
         theme: "dark",
         transition: Bounce,
       });
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
     }
@@ -75,7 +87,6 @@ export default function UploadForm() {
               onChange={handleChange}
               className="w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-white placeholder-gray-400 transition duration-200"
             />
-
             {/* Thumbnail Upload */}
             <div className="flex justify-between items-end gap-5 w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-white placeholder-gray-400 transition duration-200">
               <label htmlFor="files" className="text-gray-400">
@@ -90,7 +101,6 @@ export default function UploadForm() {
                 type="file"
               />
             </div>
-
             {/* Description */}
             <input
               type="text"
@@ -100,7 +110,6 @@ export default function UploadForm() {
               onChange={handleChange}
               className="w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-white placeholder-gray-400 transition duration-200"
             />
-
             {/* Category Dropdown */}
             <select
               name="category"
@@ -108,23 +117,26 @@ export default function UploadForm() {
               onChange={handleChange}
               className="w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 cursor-pointer focus:border-green-500 focus:ring-2 focus:ring-green-500 text-gray-400 placeholder-gray-400 transition duration-200"
             >
-             <option value="">Select Category</option>
+              <option value="">Select Category</option>
               <option value="comedy">Comedy</option>
               <option value="horror">Horror</option>
               <option value="motivational">Motivational</option>
               <option value="love">Love</option>
-              <option value="crime">crime</option>
+              <option value="crime">Crime</option>
               <option value="history">History</option>
               <option value="educational">Educational</option>
             </select>
-
             {/* Episode Upload */}
-            <div className="border-2 border-gray-700 py-10 px-10 text-center rounded">
+            <div
+              className="border-2 border-gray-700 py-10 px-10 text-center rounded cursor-pointer"
+              onClick={handleDivClick}
+            >
               <input
                 type="file"
                 name="video"
                 accept="audio/*,video/*"
                 onChange={handleFileChange}
+                ref={fileInputRef}
                 className="hidden w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-white placeholder-gray-400 transition duration-200"
                 id="episode-upload"
               />
@@ -135,16 +147,12 @@ export default function UploadForm() {
                   marginBottom: "10px",
                 }}
               />
-              <label
-                htmlFor="episode-upload"
-                className="cursor-pointer text-gray-400"
-              >
+              <p className="text-gray-400">
                 {formData.video == null
                   ? "Upload your episode"
                   : formData.video?.name}
-              </label>
+              </p>
             </div>
-
             {/* Tags */}
             <textarea
               name="tags"
@@ -153,7 +161,6 @@ export default function UploadForm() {
               onChange={handleChange}
               className="w-full py-3 px-4 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-white placeholder-gray-400 transition duration-200"
             />
-
             {error && (
               <p className="text-red-500 font-semibold mt-2">{error}</p>
             )}

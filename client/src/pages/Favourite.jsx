@@ -27,7 +27,7 @@ const MyFavorites = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-transparent pt-25 text-white">
+      <div className="min-h-screen bg-transparent p-30 text-white">
         {/* Navbar at the top */}
 
         {/* Title */}

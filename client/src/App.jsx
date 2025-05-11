@@ -14,7 +14,9 @@ import Home from "./pages/Home";
 import Favourite from "./pages/Favourite";
 import Update from "./pages/Update";
 import AllUsers from "./pages/AllUsers";
+import ContactUs from "./pages/ContactUs"
 import { Bounce, ToastContainer } from "react-toastify";
+import ShowPodcasts from "./pages/ShowPodcasts";
 
 // import { Toaster } from "react-hot-toast";
 
@@ -142,6 +144,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <AllUsers/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contactus"
+            element={
+              <ProtectedRoute>
+                <ContactUs/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/showpodcasts/:category"
+            element={
+              <ProtectedRoute>
+                <ShowPodcasts/>
               </ProtectedRoute>
             }
           />
