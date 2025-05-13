@@ -151,8 +151,15 @@ export const getUserFavorites = async (req, res) => {
         const userId = req.userId; // Or use req.user.id if using auth middleware
 
         const user = await User.findById(userId)
-            .populate('favorites') // populate favorite Episodes
-            .select('favorites'); // only return the favorites field
+        .populate({
+          path: 'favorites',
+          populate: {
+            path: 'createdBy', // Populate createdBy inside each favorite
+            model: 'User',      // Ensure this matches your User model name
+          },
+        })
+        .select('favorites'); // Only return favorites field from the User
+      
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
