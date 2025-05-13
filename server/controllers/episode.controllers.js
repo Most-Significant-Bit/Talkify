@@ -322,3 +322,98 @@ export const searchEpisodesByCategory = async (req, res) => {
   }
 };
 
+// export const searchEpisodesByTitleOrCreator = async (req, res) => {
+//   try {
+//       const { title, creator } = req.query;
+
+//       // Conditions to build the query dynamically
+//       const conditions = [];
+
+//       // If title query is provided
+//       if (title) {
+//           conditions.push({ title: { $regex: title, $options: 'i' } });
+//       }
+
+//       // If creator query is provided
+//       if (creator) {
+//           const matchingUsers = await User.find({
+//               name: { $regex: creator, $options: 'i' }
+//           }).select('_id');
+
+//           const creatorIds = matchingUsers.map(user => user._id);
+
+//           if (creatorIds.length > 0) {
+//               conditions.push({ createdBy: { $in: creatorIds } });
+//           }
+//       }
+
+//       let query = {};
+//       if (conditions.length > 0) {
+//           // Combine conditions with OR
+//           query = { $or: conditions };
+//       }
+
+//       const episodes = await Episode.find(query)
+//           .populate('createdBy', 'name avatar email')
+//           .sort({ createdAt: -1 });
+
+//       res.status(200).json({ success: true, data: episodes });
+//   } catch (err) {
+//       console.error("Error searching episodes:", err);
+//       res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// }
+
+// controllers/episodeController.js
+
+
+export const searchEpisodes = async (req, res) => {
+    try {
+        const { title, creator } = req.query;
+
+        if (!title && !creator) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide a title or creator name to search.',
+            });
+        }
+
+        const queryConditions = [];
+
+        // Title condition
+        if (title) {
+            queryConditions.push({
+                title: { $regex: title, $options: 'i' }, // Case-insensitive partial match
+            });
+        }
+
+        // Creator name condition
+        if (creator) {
+            const matchingUsers = await User.find({
+                name: { $regex: creator, $options: 'i' },
+            }).select('_id');
+
+            const userIds = matchingUsers.map(user => user._id);
+
+            if (userIds.length > 0) {
+                queryConditions.push({
+                    createdBy: { $in: userIds },
+                });
+            } else {
+                // If no matching creators, return early with empty result
+                return res.status(200).json({ success: true, data: [] });
+            }
+        }
+
+        const episodes = await Episode.find({
+            $or: queryConditions,
+        })
+            .populate('createdBy', 'name email avatar')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({ success: true, data: episodes });
+    } catch (error) {
+        console.error('Error searching episodes:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
