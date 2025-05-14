@@ -120,10 +120,13 @@ export default function UploadForm() {
               <option value="">Select Category</option>
               <option value="comedy">Comedy</option>
               <option value="horror">Horror</option>
+              <option value="Culture">Culture</option>
               <option value="motivational">Motivational</option>
               <option value="love">Love</option>
+              <option value="science">Science</option>
               <option value="crime">Crime</option>
               <option value="history">History</option>
+              <option value="sports">Sports</option>
               <option value="educational">Educational</option>
             </select>
             {/* Episode Upload */}

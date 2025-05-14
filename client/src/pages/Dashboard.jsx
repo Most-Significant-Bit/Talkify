@@ -78,8 +78,13 @@ const Dashboard = () => {
   const [motivational, setMotivational] = useState([]);
   const [love, setLove] = useState([]);
   const [horror, setHorror] = useState([]);
+  const [science, setScience] = useState([]);
+  const [culture, setCulture] = useState([]);
+  const [sports, setSports] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [educational, setEducational] = useState([]);
   const [crime, setCrime] = useState([]);
-
+  
 
   const fetchData = async () => {
     try {
@@ -101,7 +106,12 @@ const Dashboard = () => {
       motivational: setMotivational,
       horror: setHorror,
       comedy: setComedy,
-      crime : setCrime
+      crime : setCrime,
+      science: setScience,
+      culture : setCulture,
+      sports : setSports,
+      history : setHistory,
+      educational : setEducational
     };
   
     const categoryPromises = Object.keys(categorySetters).map(async (category) => {
@@ -174,6 +184,23 @@ const Dashboard = () => {
         </Container>
         <Container>
           <Topic>
+            Educational
+            <Link to={`/showpodcasts/educational`} style={{ textDecoration: "none" }}>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {educational?.length > 0 ? (
+              educational?.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+        <Container>
+          <Topic>
             Horror
             <Link to={`/showpodcasts/horror`} style={{ textDecoration: "none" }}>
               <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
@@ -191,6 +218,40 @@ const Dashboard = () => {
         </Container>
 
 
+        <Container>
+          <Topic>
+            Culture
+            <Link to={`/showpodcasts/culture`} style={{ textDecoration: "none" }}>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {culture?.length > 0 ? (
+              culture?.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
+        <Container>
+          <Topic>
+            Sports
+            <Link to={`/showpodcasts/sports`} style={{ textDecoration: "none" }}>
+              <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
+            </Link>
+          </Topic>
+          <Podcasts>
+            {sports?.length > 0 ? (
+              sports?.map((item, index) => {
+                return <PodcastCard key={index} data={item} id={item?._id} />;
+              })
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </Podcasts>
+        </Container>
         <Container>
           <Topic>
             Comedy
@@ -233,8 +294,8 @@ const Dashboard = () => {
             </Link>
           </Topic>
           <Podcasts>
-            {crime?.length > 0 ? (
-              crime?.map((item, index) => {
+            {history?.length > 0 ? (
+              history?.map((item, index) => {
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (
@@ -261,14 +322,14 @@ const Dashboard = () => {
         </Container>
         <Container>
           <Topic>
-            Educational
-            <Link to={`/showpodcasts/educational`} style={{ textDecoration: "none" }}>
+            Science
+            <Link to={`/showpodcasts/science`} style={{ textDecoration: "none" }}>
               <Span className="px-4 py-3 rounded-xl bg-transparent border-2 border-green-500">Show All</Span>
             </Link>
           </Topic>
           <Podcasts>
-            {crime?.length > 0 ? (
-              crime?.map((item, index) => {
+            {science?.length > 0 ? (
+              science?.map((item, index) => {
                 return <PodcastCard key={index} data={item} id={item?._id} />;
               })
             ) : (

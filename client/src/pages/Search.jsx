@@ -1,143 +1,104 @@
-import React from 'react'
-import styled from 'styled-components';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useDebounce } from "../utils/hooks/useDebounce.js";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Category } from "../utils/Data";
-import { Link } from '@mui/material';
-import {DefaultCard} from "../components/DefaultCard.jsx";
-import TopResult from "../components/TopResult.jsx";
-import MoreResult from '../components/MoreResult.jsx';
-import {CircularProgress} from "@mui/material";
+import { Link } from "react-router-dom";
+import { DefaultCard } from "../components/DefaultCard.jsx";
+import PodcastCard from "../components/PodcastCard.jsx";
+import { CircularProgress } from "@mui/material";
+import Navbar from "../components/Navbar.jsx";
 
-const SearchMain = styled.div`
-padding:20px 30px;
-padding-bottom: 200px;
-height: 100%;
-overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  @media (max-width: 768px) {
-    padding: 6px 9px;
-  }
-`;
+const CLIENT_URL = "http://localhost:5000/api";
 
-const SearchedCards = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 14px;
-    @media (max-width: 768px) {
-        flex-direction: column;
-        justify-content: center;
-        padding: 6px;
-    }
-`;
-
-
-const SearchBar = styled.div`
-max-width: 700px;
-display: flex;
-width: 100%;
-border:1px solid ${({ theme }) => theme.text_secondary};
-border-radius: 30px;
-cursor: pointer;
-padding:12px 16px;
-justify-content: flex-start;
-align-items: center;
-gap: 6px;
-color: ${({ theme }) => theme.text_secondary};
-`;
-
-const Categories = styled.div`
-margin: 20px 10px;`;
-
-const Heading = styled.div`
-align-items: flex-start;
-color:${({ theme }) => theme.text_primary};
-font-size: 22px;
-font-weight: 540;
-margin: 10px 14px;
-`;
-
-const BrowseAll = styled.div`
-display: flex;
-flex-wrap: wrap;
-gap:20px;
-padding:14px;
-`;
-
-
-const Loader = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100%;
-width: 100%;
-`
-
-const OtherResults = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 700px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    gap: 6px;
-    padding: 4px 4px;
-    @media (max-width: 768px) {
-        height: 100%;
-        padding: 4px 0px;
-    }
-`;
-
+axios.defaults.withCredentials = true;
 
 const Search = () => {
-  const [searched, setSearched] = React.useState("");
-  const [searchedPodcasts, setSearchedPodcasts] = React.useState([1,2,3,4,5,6]);
-  const [loading, setLoading] = React.useState(false);
+  const [searched, setSearched] = useState("");
+  const [searchedPodcasts, setSearchedPodcasts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange=async (e)=>{
-    setSearched(e.target.value);
-    setLoading(true);
-  }
+  const debouncedSearch = useDebounce(searched, 500);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (!debouncedSearch.trim()) {
+        setSearchedPodcasts([]);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const res = await axios.get(`${CLIENT_URL}/find/?q=${debouncedSearch}`);
+        setSearchedPodcasts(res.data?.data || []);
+      } catch (err) {
+        console.error("Search error:", err);
+        setSearchedPodcasts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, [debouncedSearch]);
+
   return (
-    <SearchMain>
-      <div style={{display: "flex", justifyContent: "center", width: "100%"}}>
-      <SearchBar>
-        <SearchOutlinedIcon sx={{color:"inherit"}}/>
-        <input type='text' placeholder='Search Artist/Podcasts' style={{border:'none', outline: "none", width: "100%" , background: "inherit", color: "inherit"}}
-        value={searched} onChange={(e) => handleChange(e)}/>
-      </SearchBar>
+    <div className="flex flex-col h-screen overflow-y-auto p-24">
+      <Navbar />
+
+      {/* Search Bar */}
+
+      <div className="w-full flex justify-center pt-5">
+        <div className="w-[700px] flex items-center gap-2 px-4 py-3 border border-green-400 rounded-full text-gray-400 bg-transparent">
+          <SearchOutlinedIcon className="text-inherit" />
+          <input
+            type="text"
+            placeholder="Search podcasts, artists, episodes..."
+            className="flex-1 bg-transparent outline-none text-sm text-white placeholder:text-gray-400"
+            value={searched}
+            onChange={(e) => setSearched(e.target.value)}
+          />
+        </div>
       </div>
-      {searched === "" ? (
-        <Categories>
-          <Heading>Browse All</Heading>
-          <BrowseAll>
-          {Category.map((category)=>(
-            <Link
-            to={`/showpodcasts/${category.name.toLowerCase()}`}
-            style={{textDecoration: "none"}}
-            >
-              < DefaultCard category={category} />
-            </Link>
-          ))}
-          </BrowseAll>
-          </Categories>
-        ) : (
-          <>
-          {
-            loading ? (<Loader><CircularProgress/></Loader>):(<SearchedCards>{searchedPodcasts.length===0?(<>No Podcasts Found</>):(<>
-            <TopResult podcast={searchedPodcasts[0]} />
-              <OtherResults>
-                  {searchedPodcasts.map((podcast) => (
-                      <MoreResult podcast={podcast} />
-                  ))}
-              </OtherResults></>)}</SearchedCards>)
-          }
-          </>
+
+      {/* Browse All or Search Results */}
+      {searched.trim() === "" ? (
+        <div className="p-10">
+          <h2 className="text-2xl font-semibold text-white mb-3">Browse All</h2>
+          <div className="flex flex-wrap gap-4">
+            {Category.map((category) => (
+              <Link
+                key={category.name}
+                to={`/showpodcasts/${category.name.toLowerCase()}`}
+                className="no-underline"
+              >
+                <DefaultCard category={category} />
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          {loading ? (
+            <div className="flex justify-center items-center h-64 w-full">
+              <CircularProgress />
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-4 pt-5">
+              {searchedPodcasts.length === 0 ? (
+                <p className="text-white">No Podcasts Found</p>
+              ) : (
+                searchedPodcasts.map((podcast, index) => (
+                  <PodcastCard key={index} data={podcast} />
+                ))
+              )}
+            </div>
           )}
-    </SearchMain>
-  )
-}
+        </>
+      )}
+    </div>
+  );
+};
 
 export default Search;

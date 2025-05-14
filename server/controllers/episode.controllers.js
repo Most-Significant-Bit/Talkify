@@ -1,14 +1,13 @@
-import Episode from '../models/episode.model.js';
-import {User} from '../models/user.model.js';
-import { uploadOnCloudinary } from '../utils/cloudinary.js'
-
+import Episode from "../models/episode.model.js";
+import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 export const uploadEpisode = async (req, res) => {
   try {
     const { title, description, category, tags } = req.body;
     console.table({ title, description, category, tags });
 
-    const tagsArray = tags ? tags.split(',') : [];
+    const tagsArray = tags ? tags.split(",") : [];
     const creator = req.userId;
 
     console.log(req.files);
@@ -33,20 +32,15 @@ export const uploadEpisode = async (req, res) => {
       description,
       category,
       tags: tagsArray,
-      thumbnail: thumbnail.url || '',
-      video: video.url || '',
-      duration: video?.duration || 0
+      thumbnail: thumbnail.url || "",
+      video: video.url || "",
+      duration: video?.duration || 0,
     });
 
-      await User.findByIdAndUpdate(
-        creator,
-        {
-          $addToSet: {episodes_by_user: episode._id}
-        }
-      )
-      res.status(200).json(episode);
-    
-
+    await User.findByIdAndUpdate(creator, {
+      $addToSet: { episodes_by_user: episode._id },
+    });
+    res.status(200).json(episode);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -62,14 +56,14 @@ export const getAllEpisodes = async (req, res) => {
 };
 
 export const getEpisodeById = async (req, res) => {
-    try {
-      const episode = await Episode.findById(req.params.id).populate("createdBy");
-      if (!episode) return res.status(404).json({ message: "Episode not found" });
-      res.json(episode);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-}
+  try {
+    const episode = await Episode.findById(req.params.id).populate("createdBy");
+    if (!episode) return res.status(404).json({ message: "Episode not found" });
+    res.json(episode);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 export const updateEpisode = async (req, res) => {
   try {
@@ -82,11 +76,13 @@ export const updateEpisode = async (req, res) => {
     }
 
     if (episode.createdBy.toString() !== userId) {
-      return res.status(403).json({ error: "Unauthorized to update this episode" });
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to update this episode" });
     }
 
     const { title, description, category, tags } = req.body;
-    const tagsArray = tags ? tags.split(',') : episode.tags;
+    const tagsArray = tags ? tags.split(",") : episode.tags;
 
     let thumbnail = episode.thumbnail;
     if (req.files?.thumbnail?.length > 0) {
@@ -134,7 +130,7 @@ export const updateEpisode = async (req, res) => {
 //     const userId = req.userId;
 
 //     console.log(episodeId);
-  
+
 //     if (!episodeId) {
 //       return res.status(400).json({ message: "Episode ID is required" });
 //     }
@@ -179,7 +175,7 @@ export const deleteEpisode = async (req, res) => {
 
     // Remove episode reference from the user's episodes_by_user
     await User.findByIdAndUpdate(userId, {
-      $pull: { episodes_by_user: episodeId }
+      $pull: { episodes_by_user: episodeId },
     });
 
     // Remove episode from all users' favorites
@@ -189,25 +185,22 @@ export const deleteEpisode = async (req, res) => {
     );
 
     res.status(200).json({ message: "Episode deleted successfully" });
-
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
-
-
-
-export const getUserEpisodes = async (req,res) =>{
-    try{
-        const userId = req.params.userId;
-        const episodes = await Episode.find({createdBy: userId}).populate('createdBy');
-        res.status(200).json(episodes);
-    } catch(error){
-        res.status(400).json({message: error.message});
-    }
-}
+export const getUserEpisodes = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const episodes = await Episode.find({ createdBy: userId }).populate(
+      "createdBy"
+    );
+    res.status(200).json(episodes);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 // export const favoriteEpisode = async (req, res) => {
 //   try {
@@ -261,30 +254,30 @@ export const favoriteEpisode = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!episode) {
-      return res.status(404).json({ error: 'Episode not found' });
+      return res.status(404).json({ error: "Episode not found" });
     }
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const alreadyFavorited = user.favorites.some(
-      fav => fav.toString() === episodeId
+      (fav) => fav.toString() === episodeId
     );
 
     if (alreadyFavorited) {
       // Unlike: Remove episode from user's favorites and user from episode's favorite_by
       user.favorites = user.favorites.filter(
-        fav => fav.toString() !== episodeId
+        (fav) => fav.toString() !== episodeId
       );
       episode.favorite_by = episode.favorite_by.filter(
-        uid => uid.toString() !== userId
+        (uid) => uid.toString() !== userId
       );
       episode.favorites = Math.max(0, episode.favorites - 1);
 
       await Promise.all([user.save(), episode.save()]);
 
-      return res.status(200).json({ message: 'Disliked' });
+      return res.status(200).json({ message: "Disliked" });
     }
 
     // Like: Add episode to user's favorites and user to episode's favorite_by
@@ -294,25 +287,25 @@ export const favoriteEpisode = async (req, res) => {
 
     await Promise.all([user.save(), episode.save()]);
 
-    res.status(200).json({ message: 'Liked' });
-
+    res.status(200).json({ message: "Liked" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
 
-
 export const searchEpisodesByCategory = async (req, res) => {
   const category = req.query.category;
 
   if (!category) {
-    return res.status(400).json({ error: "Category is required in query parameters." });
+    return res
+      .status(400)
+      .json({ error: "Category is required in query parameters." });
   }
 
   try {
     const episodes = await Episode.find({
-      category: { $regex: new RegExp(`^${category}$`, 'i') }
+      category: { $regex: new RegExp(`^${category}$`, "i") },
     }).populate("createdBy"); // Automatically joins user data
 
     res.status(200).json(episodes);
@@ -366,54 +359,37 @@ export const searchEpisodesByCategory = async (req, res) => {
 
 // controllers/episodeController.js
 
-
 export const searchEpisodes = async (req, res) => {
-    try {
-        const { title, creator } = req.query;
+  try {
+    const { q } = req.query;
 
-        if (!title && !creator) {
-            return res.status(400).json({
-                success: false,
-                message: 'Please provide a title or creator name to search.',
-            });
-        }
-
-        const queryConditions = [];
-
-        // Title condition
-        if (title) {
-            queryConditions.push({
-                title: { $regex: title, $options: 'i' }, // Case-insensitive partial match
-            });
-        }
-
-        // Creator name condition
-        if (creator) {
-            const matchingUsers = await User.find({
-                name: { $regex: creator, $options: 'i' },
-            }).select('_id');
-
-            const userIds = matchingUsers.map(user => user._id);
-
-            if (userIds.length > 0) {
-                queryConditions.push({
-                    createdBy: { $in: userIds },
-                });
-            } else {
-                // If no matching creators, return early with empty result
-                return res.status(200).json({ success: true, data: [] });
-            }
-        }
-
-        const episodes = await Episode.find({
-            $or: queryConditions,
-        })
-            .populate('createdBy', 'name email avatar')
-            .sort({ createdAt: -1 });
-
-        res.status(200).json({ success: true, data: episodes });
-    } catch (error) {
-        console.error('Error searching episodes:', error);
-        res.status(500).json({ success: false, message: 'Server error' });
+    if (!q) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a search query.",
+      });
     }
+
+    const queryConditions = [{ title: { $regex: q, $options: "i" } }];
+
+    const matchingUsers = await User.find({
+      name: { $regex: q, $options: "i" },
+    }).select("_id");
+
+    if (matchingUsers.length > 0) {
+      const userIds = matchingUsers.map((user) => user._id);
+      queryConditions.push({ createdBy: { $in: userIds } });
+    }
+
+    const episodes = await Episode.find({
+      $or: queryConditions,
+    })
+      .populate("createdBy", "name email avatar")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: episodes });
+  } catch (error) {
+    console.error("Error searching episodes:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
