@@ -7,8 +7,15 @@ export const uploadEpisode = async (req, res) => {
     const { title, description, category, tags } = req.body;
     console.table({ title, description, category, tags });
 
-    const tagsArray = tags ? tags.split(",") : [];
+    // const tagsArray = tags ? tags.split(",") : [];
     const creator = req.userId;
+
+  //   const tagsArray = tags ? tags.split(",").map(tag => tag.trim().replace(/^"|"$/g, ''))
+  // : [];
+  
+    const tagsArray = tags ? tags.split(",").map(tag => tag.trim().replace(/^['"]+|['"]+$/g,''))
+  : [];
+  
 
     console.log(req.files);
 
@@ -82,7 +89,10 @@ export const updateEpisode = async (req, res) => {
     }
 
     const { title, description, category, tags } = req.body;
-    const tagsArray = tags ? tags.split(",") : episode.tags;
+    // const tagsArray = tags ? tags.split(",") : episode.tags;
+
+    const tagsArray = tags ? tags.split(",").map(tag => tag.trim().replace(/^['"]+|['"]+$/g,''))
+  : [];
 
     let thumbnail = episode.thumbnail;
     if (req.files?.thumbnail?.length > 0) {
