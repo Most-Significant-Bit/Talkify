@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 const __dirname = path.resolve();
 
-app.use(cors({origin : "http://localhost:5173", credentials : true}));
+app.use(cors({origin : "https://talkify-frontend-rqid.onrender.com/", credentials : true}));
 
 app.use(express.json()); 
 // allows us to parse incoming request from a form / post method
