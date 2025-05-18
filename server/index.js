@@ -8,11 +8,13 @@ import authRoutes from "./routes/auth.routes.js"
 import episodeRoutes from "./routes/episode.routes.js"
 import userRoutes from './routes/user.routes.js'
 import searchRoutes from './routes/search.routes.js'
+import path from "path"
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+const __dirname = path.resolve();
 
-app.use(cors({origin : "https://talkify-frontend-rqid.onrender.com/", credentials : true}));
+app.use(cors({origin : "http://localhost:5173", credentials : true}));
 
 app.use(express.json()); 
 // allows us to parse incoming request from a form / post method
@@ -25,6 +27,11 @@ app.use("/api/episode",episodeRoutes);
 app.use("/api",searchRoutes);
 app.use("/api/user",userRoutes);
 
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*",(req,res)=>{
+    res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"))
+})
 
 app.listen(PORT, ()=>{
     connectDB();
