@@ -5,7 +5,7 @@ import PodcastCard from "../components/PodcastCard";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
-const CLIENT_URL = "http://localhost:5000/api/episode";
+import { CLIENT_URL } from "../utils/Data.js"
 
 const ShowPodcasts = () => {
   const { category } = useParams();
@@ -16,8 +16,8 @@ const ShowPodcasts = () => {
       try {
         const res =
           category === "mostpopular"
-            ? await axios.get(`${CLIENT_URL}/getAll`)
-            : await axios.get(`${CLIENT_URL}/search/?category=${category}`);
+            ? await axios.get(`${CLIENT_URL}/api/episode/getAll`)
+            : await axios.get(`${CLIENT_URL}/api/episode/search/?category=${category}`);
 
         const data =
           category === "mostpopular"

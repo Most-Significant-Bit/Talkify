@@ -15,7 +15,7 @@ import { MdVerified } from "react-icons/md";
 
 import { getFirstName } from "../utils/info";
 
-const CLIENT_URL = "http://localhost:5000/api";
+import { CLIENT_URL } from "../utils/Data.js"
 
 axios.defaults.withCredentials = true;
 
@@ -32,7 +32,7 @@ const Profile = () => {
   const { userId } = useParams();
 
   const handleFollowToggle = async () => {
-    await axios.put(`${CLIENT_URL}/user/follow/${user?._id}`);
+    await axios.put(`${CLIENT_URL}/api/user/follow/${user?._id}`);
     setIsFollowing((prev) => !prev);
     await checkAuth();
   };
@@ -44,10 +44,10 @@ const Profile = () => {
 
   const fetchData = async () => {
     try {
-      const response = (await axios.get(`${CLIENT_URL}/user/details/${userId}`))
+      const response = (await axios.get(`${CLIENT_URL}/api/user/details/${userId}`))
         .data.user;
       const data = await (
-        await axios.get(`${CLIENT_URL}/episode/userEpisodes/${userId}`)
+        await axios.get(`${CLIENT_URL}/api/episode/userEpisodes/${userId}`)
       ).data;
       setUser(response);
       setUserEpisodes(data);
@@ -71,7 +71,7 @@ const Profile = () => {
     try {
       const res = await toast.promise(
         axios.put(
-          `${CLIENT_URL}/user/update/avatar/${currentUser?._id}`,
+          `${CLIENT_URL}/api/user/update/avatar/${currentUser?._id}`,
           formData,
           {
             headers: {

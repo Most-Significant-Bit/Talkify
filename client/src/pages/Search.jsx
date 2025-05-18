@@ -9,7 +9,7 @@ import PodcastCard from "../components/PodcastCard.jsx";
 import { CircularProgress } from "@mui/material";
 import Navbar from "../components/Navbar.jsx";
 
-const CLIENT_URL = "http://localhost:5000/api";
+import { CLIENT_URL } from "../utils/Data.js"
 
 axios.defaults.withCredentials = true;
 
@@ -30,7 +30,7 @@ const Search = () => {
 
       try {
         setLoading(true);
-        const res = await axios.get(`${CLIENT_URL}/find/?q=${debouncedSearch}`);
+        const res = await axios.get(`${CLIENT_URL}/api/find/?q=${debouncedSearch}`);
         setSearchedPodcasts(res.data?.data || []);
       } catch (err) {
         console.error("Search error:", err);

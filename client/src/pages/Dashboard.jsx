@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 
 import axios from "axios";
 
-const CLIENT_URL = "http://localhost:5000/api/episode";
+import { CLIENT_URL } from "../utils/Data.js"
 
 axios.defaults.withCredentials = true;
 
@@ -88,7 +88,7 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const allResponse = await axios.get(`${CLIENT_URL}/getAll`);
+      const allResponse = await axios.get(`${CLIENT_URL}/api/episode/getAll`);
       
       // Sort by favorites (highest to lowest), then take top 7
       const sortedData = allResponse.data
@@ -116,7 +116,7 @@ const Dashboard = () => {
   
     const categoryPromises = Object.keys(categorySetters).map(async (category) => {
       try {
-        const res = await axios.get(`${CLIENT_URL}/search/?category=${category}`);
+        const res = await axios.get(`${CLIENT_URL}api/episode/search/?category=${category}`);
         categorySetters[category](res.data);
       } catch (err) {
         if (err.response && err.response.status === 404) {

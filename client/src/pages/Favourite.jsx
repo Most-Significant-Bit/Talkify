@@ -4,7 +4,7 @@ import PodcastCard from "../components/PodcastCard"; // Adjust path as needed
 
 import axios from "axios";
 
-const CLIENT_URL = "http://localhost:5000/api/user";
+import { CLIENT_URL } from "../utils/Data.js"
 
 axios.defaults.withCredentials = true;
 
@@ -13,7 +13,7 @@ const MyFavorites = () => {
 
   const fetchData = async () => {
     try {
-      const res = (await axios.get(`${CLIENT_URL}/showFavorites`)).data.favorites;
+      const res = (await axios.get(`${CLIENT_URL}/api/user/showFavorites`)).data.favorites;
       console.log(res);
       setData(res);
     } catch (error) {

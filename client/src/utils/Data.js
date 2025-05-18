@@ -51,3 +51,5 @@ export const Category = [
     color: "#6c4bb8",
   },
 ];
+
+export const CLIENT_URL = "https://talkify-backend-hcx1.onrender.com"

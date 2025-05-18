@@ -12,12 +12,13 @@ import { useEpisodeStore } from "../store/episodeStore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { Bounce, toast } from "react-toastify";
+import { CLIENT_URL } from "../utils/Data.js"
 
 import axios from "axios";
 import { FiDownload } from "react-icons/fi";
 
 axios.defaults.withCredentials = true;
-const CLIENT_URL = "http://localhost:5000/api";
+
 
 const CustomVideoPlayer = () => {
   const videoRef = useRef(null);
@@ -41,13 +42,13 @@ const CustomVideoPlayer = () => {
   const navigate = useNavigate();
 
   const handleLikeChange = async () => {
-    await axios.put(`${CLIENT_URL}/episode/favorite/${id}`);
+    await axios.put(`${CLIENT_URL}/api/episode/favorite/${id}`);
     setIsLiked((prev) => !prev);
   };
 
   const handleToggleFollow = async () => {
     // Call API here if needed
-    await axios.put(`${CLIENT_URL}/user/follow/${episode?.createdBy?._id}`);
+    await axios.put(`${CLIENT_URL}/api/user/follow/${episode?.createdBy?._id}`);
     setIsFollowing((prev) => !prev);
     checkAuth();
   };

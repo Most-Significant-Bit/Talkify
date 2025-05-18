@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import UserCard from "../components/UserCard";
 import Navbar from "../components/Navbar";
+import { CLIENT_URL } from "../utils/Data.js"
 
 import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 
-const CLIENT_URL = "http://localhost:5000/api/user";
 
 axios.defaults.withCredentials = true;
 
@@ -16,7 +16,7 @@ const AllUsers = () => {
 
   const fetchData = async () => {
     try {
-      const response = (await axios.get(`${CLIENT_URL}/allUser`)).data;
+      const response = (await axios.get(`${CLIENT_URL}/api/user/allUser`)).data;
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching all data:", error);

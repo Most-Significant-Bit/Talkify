@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import axios from "axios";
 
-const CLIENT_URL = "http://localhost:5000/api/episode";
+import { CLIENT_URL } from "../utils/Data.js"
 
 axios.defaults.withCredentials = true;
 
@@ -23,7 +23,7 @@ export const useEpisodeStore = create((set) => ({
       formData.append("category", category);
       formData.append("tags", JSON.stringify(tags)); // in case it's an array
 
-      const response = await axios.post(`${CLIENT_URL}/upload`, formData, {
+      const response = await axios.post(`${CLIENT_URL}/api/episode/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -67,7 +67,7 @@ export const useEpisodeStore = create((set) => ({
   getEpisode: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = (await axios.get(`${CLIENT_URL}/${id}`)).data;
+      const response = (await axios.get(`${CLIENT_URL}/api/episode/${id}`)).data;
       set({ episode: response, isLoading: false, error: null });
     } catch (error) {
       set({
@@ -94,7 +94,7 @@ export const useEpisodeStore = create((set) => ({
       formData.append("category", category);
       formData.append("tags", JSON.stringify(tags)); // in case it's an array
 
-      const response = await axios.put(`${CLIENT_URL}/update/${id}`, formData, {
+      const response = await axios.put(`${CLIENT_URL}/api/episode/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -114,7 +114,7 @@ export const useEpisodeStore = create((set) => ({
     set({ isLoading: true, error: null });
     await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      const response = await axios.delete(`${CLIENT_URL}/delete/${id}`);
+      const response = await axios.delete(`${CLIENT_URL}/api/episode/delete/${id}`);
       set({ isLoading : false, error : null});
     } catch (error) {
       set({
