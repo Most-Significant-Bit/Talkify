@@ -155,23 +155,6 @@ const Profile = () => {
             <div className="flex flex-col items-start">
               <div className="flex items-center">
                 <h1 className="text-3xl font-bold mr-4">{user?.name}</h1>
-                {user?._id === currentUser?._id ? (
-                  user?.isVerified ? (
-                    <div className="flex items-center gap-1 text-green-400 mt-1">
-                      <MdVerified className="text-green-500 text-2xl" />
-                    </div>
-                  ) : (
-                    <button className="bg-transparent border-2 border-green-500 hover:bg-green-500 px-4 py-1 rounded-full cursor-pointer text-white">
-                      Verify Account
-                    </button>
-                  )
-                ) : (
-                  user?.isVerified && (
-                    <div className="flex items-center gap-1 text-green-400 mt-1">
-                      <MdVerified className="text-green-500 text-2xl" />
-                    </div>
-                  )
-                )}
               </div>
 
               {/* Toggle Follow Button */}

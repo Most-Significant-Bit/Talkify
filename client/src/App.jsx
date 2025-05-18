@@ -17,6 +17,7 @@ import AllUsers from "./pages/AllUsers";
 import ContactUs from "./pages/ContactUs"
 import { Bounce, ToastContainer } from "react-toastify";
 import ShowPodcasts from "./pages/ShowPodcasts";
+import About from "./pages/About";
 
 // import { Toaster } from "react-hot-toast";
 
@@ -163,6 +164,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/about" element={<About/>}/>
         </Routes>
       </div>
       <ToastContainer

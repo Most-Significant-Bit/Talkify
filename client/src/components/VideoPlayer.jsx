@@ -14,6 +14,7 @@ import { useAuthStore } from "../store/authStore";
 import { Bounce, toast } from "react-toastify";
 
 import axios from "axios";
+import { FiDownload } from "react-icons/fi";
 
 axios.defaults.withCredentials = true;
 const CLIENT_URL = "http://localhost:5000/api";
@@ -37,7 +38,6 @@ const CustomVideoPlayer = () => {
   // console.log(id);
   const { user: currentUser, checkAuth } = useAuthStore();
 
-
   const navigate = useNavigate();
 
   const handleLikeChange = async () => {
@@ -51,6 +51,41 @@ const CustomVideoPlayer = () => {
     setIsFollowing((prev) => !prev);
     checkAuth();
   };
+
+  const handleDownload = async () => {
+  const videoElement = videoRef.current;
+  if (!videoElement) return;
+
+  const videoSrc = videoElement.currentSrc || videoElement.src;
+  if (!videoSrc) {
+    toast.error("Video source not available!");
+    return;
+  }
+
+  try {
+    const response = await fetch(videoSrc);
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${episode?.title || "video"}.mp4`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url); // Clean up
+
+    toast.success("Download started!", {
+      position: "top-right",
+      autoClose: 2000,
+      theme: "dark",
+    });
+  } catch (err) {
+    toast.error("Failed to download video.");
+    console.error("Download error:", err);
+  }
+};
+
 
   useEffect(() => {
     getEpisode(id);
@@ -137,7 +172,7 @@ const CustomVideoPlayer = () => {
     }
   };
 
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     await deleteEpisode(id);
     toast.success("Episode Deleted Successfully!", {
       position: "top-right",
@@ -150,7 +185,7 @@ const CustomVideoPlayer = () => {
       theme: "dark",
       transition: Bounce,
     });
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   return (
@@ -238,12 +273,17 @@ const CustomVideoPlayer = () => {
 
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center gap-4">
-            <a href={`/profile/${episode?.createdBy?._id}`}><img
-              className="w-13 h-13 cursor-pointer border-2 object-cover border-green-500 rounded-full"
-              src= {episode?.createdBy?.avatar || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541" }
-              alt=""
-            /></a>
-            
+            <a href={`/profile/${episode?.createdBy?._id}`}>
+              <img
+                className="w-13 h-13 cursor-pointer border-2 object-cover border-green-500 rounded-full"
+                src={
+                  episode?.createdBy?.avatar ||
+                  "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
+                }
+                alt=""
+              />
+            </a>
+
             <div className="flex flex-col gap-x-0.5">
               <a
                 href={`/profile/${episode?.createdBy?._id}`}
@@ -286,8 +326,11 @@ const CustomVideoPlayer = () => {
               <span className="text-white text-2xl">{episode?.favorites}</span>
             </button>
 
-            <button className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm">
-              <CiSaveDown2 className="w-8 h-8" />
+            <button
+              onClick={handleDownload}
+              className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-3 py-1 rounded-lg text-sm"
+            >
+              <FiDownload className="w-8 h-8"/>
             </button>
 
             {currentUser?._id === episode?.createdBy?._id ? (

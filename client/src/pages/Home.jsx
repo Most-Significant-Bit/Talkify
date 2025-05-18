@@ -27,7 +27,7 @@ const Home = () => {
           <a href="/dashboard">Dashboard</a>
           <a href="/favorites">Favourites</a>
           <a href="/contactus">Contact Us</a>
-          <a href="#">About</a>
+          <a href="/about">About</a>
         </div>
 
         {/* Right */}

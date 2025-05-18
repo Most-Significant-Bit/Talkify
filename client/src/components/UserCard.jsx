@@ -14,8 +14,6 @@ const UserCard = ({ index, data }) => {
       />
       <div className="flex items-center gap-2 ">
         <h3 className="font-semibold text-lg">{data?.name}</h3>
-
-        {data?.isVerified ? <MdVerified className="text-green-500" /> : <></>}
       </div>
 
       {/* <p className="text-blue-500">{data?.email}</p>
@@ -27,7 +25,7 @@ const UserCard = ({ index, data }) => {
         </p>
       </div> */}
 
-       <div className="flex justify-start gap-12 text-center mb-5 mt-5 pl-6 pr-6">
+       <div className="flex justify-start gap-5 text-center mb-5 mt-5 pl-6 pr-6">
           <div>
             <p className="text-2xl font-semibold text-green-500">
               {data?.episodes_by_user.length}
