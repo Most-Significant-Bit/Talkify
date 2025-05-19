@@ -44,6 +44,7 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.9",
     "tailwindcss": "^4.0.15",
+    "talkify": "file:..",
     "timeago.js": "^4.0.2",
     "toolkit": "^1.5.4",
     "validator": "^13.9.0",
