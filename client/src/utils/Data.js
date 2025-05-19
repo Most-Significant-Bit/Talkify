@@ -52,4 +52,4 @@ export const Category = [
   },
 ];
 
-export const CLIENT_URL = "http://localhost:5000"
+export const CLIENT_URL = "https://talkify-3don.onrender.com"
