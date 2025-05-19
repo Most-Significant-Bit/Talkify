@@ -116,7 +116,7 @@ const Dashboard = () => {
   
     const categoryPromises = Object.keys(categorySetters).map(async (category) => {
       try {
-        const res = await axios.get(`${CLIENT_URL}api/episode/search/?category=${category}`);
+        const res = await axios.get(`${CLIENT_URL}/api/episode/search/?category=${category}`);
         categorySetters[category](res.data);
       } catch (err) {
         if (err.response && err.response.status === 404) {
