@@ -39,10 +39,7 @@ export const useAuthStore = create((set) => ({
 			})
 
 		} catch (error) {
-			set({
-				error : error.response.data.message || "Error in Logging in",
-				isLoading: false 
-			});
+			set({ error: error.response?.data?.message || "Error logging in", isLoading: false });
 			throw error;
 		}
 	},
